@@ -13,5 +13,10 @@ namespace Ictect.IntelliDocs.Web.Controllers
         {
             return View();
         }
+
+        public ActionResult SplashPage()
+        {
+            return PartialView("_SplashPage");
+        }
     }
 }

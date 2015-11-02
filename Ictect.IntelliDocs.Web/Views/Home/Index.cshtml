@@ -1,18 +1,17 @@
-﻿
-@{
-    Layout = null;
+﻿@{
+    ViewBag.Title = "Home";
 }
+<h2 class="page-title">Document Library</h2>
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Ictect IntelliDocs</title>
-</head>
-<body>
-<div>
-    <h1>Ictect IntelliDocs</h1>
+<div id="library-grid">
+    <a href="#" class="library-grid-item library-folder">
+        Test Folder
+    </a>
+    <a href="#" class="library-grid-item library-doc">Test Document</a>
 </div>
-</body>
-</html>
+
+<script>
+    $(function() {
+        IntelliDocs.showSplash();
+    });
+</script>
