@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="d95f978612754c5dafd478276b48358c" Name="Diagram1" DisplayType="false" ShowGrid="true" >
+        <EntityTypeShape EntityType="IntelliDocsDB.User" Width="2" PointX="7.75" PointY="0.5" />
+        <EntityTypeShape EntityType="IntelliDocsDB.Library" Width="1.75" PointX="4.5" PointY="0.5" />
+        <EntityTypeShape EntityType="IntelliDocsDB.Directory" Width="1.75" PointX="1" PointY="0.5" />
+        <AssociationConnector Association="IntelliDocsDB.DirectoryLibrary" />
+        <AssociationConnector Association="IntelliDocsDB.LibraryUser" />
+        <EntityTypeShape EntityType="IntelliDocsDB.Document" Width="2" PointX="4.375" PointY="3.5" />
+        <AssociationConnector Association="IntelliDocsDB.DocumentUser" />
+        <AssociationConnector Association="IntelliDocsDB.DocumentDirectory" />
+        <EntityTypeShape EntityType="IntelliDocsDB.Share" Width="1.875" PointX="0.625" PointY="3.75" />
+        <AssociationConnector Association="IntelliDocsDB.ShareDirectory" />
+        <AssociationConnector Association="IntelliDocsDB.ShareDocument" />
+        <AssociationConnector Association="IntelliDocsDB.ShareUser" />
+        <AssociationConnector Association="IntelliDocsDB.Document_OriginalUser" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
