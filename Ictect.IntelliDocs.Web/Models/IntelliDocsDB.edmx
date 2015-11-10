@@ -4,198 +4,506 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl" Namespace="IntelliDocsDB.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2005">
-        <EntityContainer Name="IntelliDocsDBTargetContainer" >
+      <Schema Namespace="IntelliDocsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6005: The data type 'hierarchyid' is currently not supported for the target Entity Framework version; the column 'nodeId' in the table 'IntelliDocs.dbo.Directories' was excluded.
+warning 6002: The table/view 'IntelliDocs.dbo.Directories' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Directories">
+          <Key>
+            <PropertyRef Name="dirId" />
+            <PropertyRef Name="dirName" />
+            <PropertyRef Name="Library_libId" />
+            <PropertyRef Name="dirCreateDate" />
+          </Key>
+          <Property Name="dirId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="nodeLevel" Type="smallint" StoreGeneratedPattern="Computed" />
+          <Property Name="dirName" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Library_libId" Type="int" Nullable="false" />
+          <Property Name="dirCreateDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Documents">
+          <Key>
+            <PropertyRef Name="docId" />
+          </Key>
+          <Property Name="docId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="docName" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Directory_nodeId" Type="int" Nullable="false" />
+          <Property Name="docCreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="User_userId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DocumentUser">
+          <Key>
+            <PropertyRef Name="Documents_docId" />
+            <PropertyRef Name="Users_userId" />
+          </Key>
+          <Property Name="Documents_docId" Type="int" Nullable="false" />
+          <Property Name="Users_userId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Libraries">
+          <Key>
+            <PropertyRef Name="libId" />
+          </Key>
+          <Property Name="libId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="libCreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="User_userId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Shares">
+          <Key>
+            <PropertyRef Name="shrId" />
+          </Key>
+          <Property Name="shrId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="shrCreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="Directory_nodeId" Type="int" Nullable="false" />
+          <Property Name="Document_docId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ShareUser">
+          <Key>
+            <PropertyRef Name="Shares_shrId" />
+            <PropertyRef Name="Users_userId" />
+          </Key>
+          <Property Name="Shares_shrId" Type="int" Nullable="false" />
+          <Property Name="Users_userId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="userId" />
+          </Key>
+          <Property Name="userId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="userEmailAddress" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="userFirstName" Type="nvarchar" MaxLength="75" Nullable="false" />
+          <Property Name="userLastName" Type="nvarchar" MaxLength="75" Nullable="false" />
+          <Property Name="userCreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="userPassword" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_DirectoryLibrary">
+          <End Role="Libraries" Type="Self.Libraries" Multiplicity="1" />
+          <End Role="Directories" Type="Self.Directories" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Libraries">
+              <PropertyRef Name="libId" />
+            </Principal>
+            <Dependent Role="Directories">
+              <PropertyRef Name="Library_libId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_OriginalUser">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Documents" Type="Self.Documents" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="userId" />
+            </Principal>
+            <Dependent Role="Documents">
+              <PropertyRef Name="User_userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentUser_Document">
+          <End Role="Documents" Type="Self.Documents" Multiplicity="1" />
+          <End Role="DocumentUser" Type="Self.DocumentUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Documents">
+              <PropertyRef Name="docId" />
+            </Principal>
+            <Dependent Role="DocumentUser">
+              <PropertyRef Name="Documents_docId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentUser_User">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="DocumentUser" Type="Self.DocumentUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="userId" />
+            </Principal>
+            <Dependent Role="DocumentUser">
+              <PropertyRef Name="Users_userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LibraryUser">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Libraries" Type="Self.Libraries" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="userId" />
+            </Principal>
+            <Dependent Role="Libraries">
+              <PropertyRef Name="User_userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShareDocument">
+          <End Role="Documents" Type="Self.Documents" Multiplicity="1" />
+          <End Role="Shares" Type="Self.Shares" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Documents">
+              <PropertyRef Name="docId" />
+            </Principal>
+            <Dependent Role="Shares">
+              <PropertyRef Name="Document_docId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShareUser_Share">
+          <End Role="Shares" Type="Self.Shares" Multiplicity="1" />
+          <End Role="ShareUser" Type="Self.ShareUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shares">
+              <PropertyRef Name="shrId" />
+            </Principal>
+            <Dependent Role="ShareUser">
+              <PropertyRef Name="Shares_shrId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShareUser_User">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="ShareUser" Type="Self.ShareUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="userId" />
+            </Principal>
+            <Dependent Role="ShareUser">
+              <PropertyRef Name="Users_userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="IntelliDocsModelStoreContainer">
+          <EntitySet Name="Documents" EntityType="Self.Documents" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DocumentUser" EntityType="Self.DocumentUser" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Libraries" EntityType="Self.Libraries" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Shares" EntityType="Self.Shares" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShareUser" EntityType="Self.ShareUser" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Directories" EntityType="Self.Directories" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Directories].[dirId] AS [dirId], 
+    [Directories].[nodeLevel] AS [nodeLevel], 
+    [Directories].[dirName] AS [dirName], 
+    [Directories].[Library_libId] AS [Library_libId], 
+    [Directories].[dirCreateDate] AS [dirCreateDate]
+    FROM [dbo].[Directories] AS [Directories]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_DirectoryLibrary" Association="Self.FK_DirectoryLibrary">
+            <End Role="Libraries" EntitySet="Libraries" />
+            <End Role="Directories" EntitySet="Directories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_OriginalUser" Association="Self.FK_Document_OriginalUser">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Documents" EntitySet="Documents" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentUser_Document" Association="Self.FK_DocumentUser_Document">
+            <End Role="Documents" EntitySet="Documents" />
+            <End Role="DocumentUser" EntitySet="DocumentUser" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentUser_User" Association="Self.FK_DocumentUser_User">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="DocumentUser" EntitySet="DocumentUser" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LibraryUser" Association="Self.FK_LibraryUser">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Libraries" EntitySet="Libraries" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShareDocument" Association="Self.FK_ShareDocument">
+            <End Role="Documents" EntitySet="Documents" />
+            <End Role="Shares" EntitySet="Shares" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShareUser_Share" Association="Self.FK_ShareUser_Share">
+            <End Role="Shares" EntitySet="Shares" />
+            <End Role="ShareUser" EntitySet="ShareUser" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShareUser_User" Association="Self.FK_ShareUser_User">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="ShareUser" EntitySet="ShareUser" />
+          </AssociationSet>
         </EntityContainer>
       </Schema>
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="IntelliDocsDB" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
-        <EntityContainer Name="IntelliDocsDBContainer" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Users" EntityType="IntelliDocsDB.User" />
-          <EntitySet Name="Libraries" EntityType="IntelliDocsDB.Library" />
-          <EntitySet Name="Directories" EntityType="IntelliDocsDB.Directory" />
-          <AssociationSet Name="DirectoryLibrary" Association="IntelliDocsDB.DirectoryLibrary">
-            <End Role="Directory" EntitySet="Directories" />
-            <End Role="Library" EntitySet="Libraries" />
-          </AssociationSet>
-          <AssociationSet Name="LibraryUser" Association="IntelliDocsDB.LibraryUser">
-            <End Role="Library" EntitySet="Libraries" />
-            <End Role="User" EntitySet="Users" />
-          </AssociationSet>
-          <EntitySet Name="Documents" EntityType="IntelliDocsDB.Document" />
-          <AssociationSet Name="DocumentUser" Association="IntelliDocsDB.DocumentUser">
-            <End Role="Document" EntitySet="Documents" />
-            <End Role="User" EntitySet="Users" />
-          </AssociationSet>
-          <AssociationSet Name="DocumentDirectory" Association="IntelliDocsDB.DocumentDirectory">
-            <End Role="Document" EntitySet="Documents" />
-            <End Role="Directory" EntitySet="Directories" />
-          </AssociationSet>
-          <EntitySet Name="Shares" EntityType="IntelliDocsDB.Share" />
-          <AssociationSet Name="ShareDirectory" Association="IntelliDocsDB.ShareDirectory">
-            <End Role="Share" EntitySet="Shares" />
-            <End Role="Directory" EntitySet="Directories" />
-          </AssociationSet>
-          <AssociationSet Name="ShareDocument" Association="IntelliDocsDB.ShareDocument">
-            <End Role="Share" EntitySet="Shares" />
-            <End Role="Document" EntitySet="Documents" />
-          </AssociationSet>
-          <AssociationSet Name="ShareUser" Association="IntelliDocsDB.ShareUser">
-            <End Role="Share" EntitySet="Shares" />
-            <End Role="User" EntitySet="Users" />
-          </AssociationSet>
-          <AssociationSet Name="Document_OriginalUser" Association="IntelliDocsDB.Document_OriginalUser">
-            <End Role="Document" EntitySet="Documents" />
-            <End Role="User" EntitySet="Users" />
-          </AssociationSet>
-        </EntityContainer>
-        <EntityType Name="User">
+      <Schema Namespace="IntelliDocsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Document">
           <Key>
-            <PropertyRef Name="userId" />
+            <PropertyRef Name="docId" />
           </Key>
-          <Property Name="userId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="userEmailAddress" Type="String" Nullable="false" />
-          <Property Name="userFirstName" Type="String" Nullable="false" />
-          <Property Name="userLastName" Type="String" Nullable="false" />
-          <NavigationProperty Name="Library" Relationship="IntelliDocsDB.LibraryUser" FromRole="User" ToRole="Library" />
-          <NavigationProperty Name="Documents" Relationship="IntelliDocsDB.DocumentUser" FromRole="User" ToRole="Document" />
-          <NavigationProperty Name="Shares" Relationship="IntelliDocsDB.ShareUser" FromRole="User" ToRole="Share" />
-          <Property Name="userCreatedDate" Type="String" Nullable="false" />
-          <Property Name="userPassword" Type="String" Nullable="false" />
-          <NavigationProperty Name="OriginalDocuments" Relationship="IntelliDocsDB.Document_OriginalUser" FromRole="User" ToRole="Document" />
+          <Property Name="docId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="docName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Directory_nodeId" Type="Int32" Nullable="false" />
+          <Property Name="docCreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="User_userId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Document_OriginalUser" FromRole="Documents" ToRole="Users" />
+          <NavigationProperty Name="Shares" Relationship="Self.FK_ShareDocument" FromRole="Documents" ToRole="Shares" />
+          <NavigationProperty Name="Users" Relationship="Self.DocumentUser" FromRole="Documents" ToRole="Users" />
         </EntityType>
         <EntityType Name="Library">
           <Key>
             <PropertyRef Name="libId" />
           </Key>
           <Property Name="libId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="Directories" Relationship="IntelliDocsDB.DirectoryLibrary" FromRole="Library" ToRole="Directory" />
-          <NavigationProperty Name="User" Relationship="IntelliDocsDB.LibraryUser" FromRole="Library" ToRole="User" />
-          <Property Name="libCreatedDate" Type="String" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Directory">
-          <Key>
-            <PropertyRef Name="nodeId" />
-          </Key>
-          <Property Name="nodeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="nodeLevel" Type="String" Nullable="false" />
-          <Property Name="dirName" Type="String" Nullable="false" />
-          <NavigationProperty Name="Library" Relationship="IntelliDocsDB.DirectoryLibrary" FromRole="Directory" ToRole="Library" />
-          <Property Name="Library_libId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Documents" Relationship="IntelliDocsDB.DocumentDirectory" FromRole="Directory" ToRole="Document" />
-          <NavigationProperty Name="Share" Relationship="IntelliDocsDB.ShareDirectory" FromRole="Directory" ToRole="Share" />
-          <Property Name="dirCreateDate" Type="String" Nullable="false" />
-        </EntityType>
-        <Association Name="DirectoryLibrary">
-          <End Type="IntelliDocsDB.Directory" Role="Directory" Multiplicity="*" />
-          <End Type="IntelliDocsDB.Library" Role="Library" Multiplicity="1" />
-          <ReferentialConstraint>
-            <Principal Role="Library">
-              <PropertyRef Name="libId" />
-            </Principal>
-            <Dependent Role="Directory">
-              <PropertyRef Name="Library_libId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="LibraryUser">
-          <End Type="IntelliDocsDB.Library" Role="Library" Multiplicity="1" />
-          <End Type="IntelliDocsDB.User" Role="User" Multiplicity="1" />
-        </Association>
-        <EntityType Name="Document">
-          <Key>
-            <PropertyRef Name="docId" />
-          </Key>
-          <Property Name="docId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="docName" Type="String" Nullable="false" />
-          <NavigationProperty Name="Users" Relationship="IntelliDocsDB.DocumentUser" FromRole="Document" ToRole="User" />
-          <NavigationProperty Name="Directory" Relationship="IntelliDocsDB.DocumentDirectory" FromRole="Document" ToRole="Directory" />
-          <Property Name="Directory_nodeId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Share" Relationship="IntelliDocsDB.ShareDocument" FromRole="Document" ToRole="Share" />
-          <Property Name="docCreatedDate" Type="String" Nullable="false" />
-          <NavigationProperty Name="User" Relationship="IntelliDocsDB.Document_OriginalUser" FromRole="Document" ToRole="User" />
+          <Property Name="libCreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="User_userId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Directories" Relationship="Self.FK_DirectoryLibrary" FromRole="Libraries" ToRole="Directories" />
+          <NavigationProperty Name="User" Relationship="Self.FK_LibraryUser" FromRole="Libraries" ToRole="Users" />
         </EntityType>
-        <Association Name="DocumentUser">
-          <End Type="IntelliDocsDB.Document" Role="Document" Multiplicity="*" />
-          <End Type="IntelliDocsDB.User" Role="User" Multiplicity="*" />
-        </Association>
-        <Association Name="DocumentDirectory">
-          <End Type="IntelliDocsDB.Document" Role="Document" Multiplicity="*" />
-          <End Type="IntelliDocsDB.Directory" Role="Directory" Multiplicity="1" />
-          <ReferentialConstraint>
-            <Principal Role="Directory">
-              <PropertyRef Name="nodeId" />
-            </Principal>
-            <Dependent Role="Document">
-              <PropertyRef Name="Directory_nodeId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="Share">
           <Key>
             <PropertyRef Name="shrId" />
           </Key>
           <Property Name="shrId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="Directory" Relationship="IntelliDocsDB.ShareDirectory" FromRole="Share" ToRole="Directory" />
-          <NavigationProperty Name="Document" Relationship="IntelliDocsDB.ShareDocument" FromRole="Share" ToRole="Document" />
-          <NavigationProperty Name="Users" Relationship="IntelliDocsDB.ShareUser" FromRole="Share" ToRole="User" />
-          <Property Name="shrCreatedDate" Type="String" Nullable="false" />
+          <Property Name="shrCreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Directory_nodeId" Type="Int32" Nullable="false" />
+          <Property Name="Document_docId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Document" Relationship="Self.FK_ShareDocument" FromRole="Shares" ToRole="Documents" />
+          <NavigationProperty Name="Users" Relationship="Self.ShareUser" FromRole="Shares" ToRole="Users" />
         </EntityType>
-        <Association Name="ShareDirectory">
-          <End Type="IntelliDocsDB.Share" Role="Share" Multiplicity="1" />
-          <End Type="IntelliDocsDB.Directory" Role="Directory" Multiplicity="1" />
-        </Association>
-        <Association Name="ShareDocument">
-          <End Type="IntelliDocsDB.Share" Role="Share" Multiplicity="1" />
-          <End Type="IntelliDocsDB.Document" Role="Document" Multiplicity="1" />
-        </Association>
-        <Association Name="ShareUser">
-          <End Type="IntelliDocsDB.Share" Role="Share" Multiplicity="*" />
-          <End Type="IntelliDocsDB.User" Role="User" Multiplicity="*" />
-        </Association>
-        <Association Name="Document_OriginalUser">
-          <End Type="IntelliDocsDB.Document" Role="Document" Multiplicity="*" />
-          <End Type="IntelliDocsDB.User" Role="User" Multiplicity="1" />
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="userId" />
+          </Key>
+          <Property Name="userId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="userEmailAddress" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="userFirstName" Type="String" MaxLength="75" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="userLastName" Type="String" MaxLength="75" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="userCreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="userPassword" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Documents" Relationship="Self.FK_Document_OriginalUser" FromRole="Users" ToRole="Documents" />
+          <NavigationProperty Name="Libraries" Relationship="Self.FK_LibraryUser" FromRole="Users" ToRole="Libraries" />
+          <NavigationProperty Name="Documents1" Relationship="Self.DocumentUser" FromRole="Users" ToRole="Documents" />
+          <NavigationProperty Name="Shares" Relationship="Self.ShareUser" FromRole="Users" ToRole="Shares" />
+        </EntityType>
+        <EntityType Name="Directory">
+          <Key>
+            <PropertyRef Name="dirId" />
+            <PropertyRef Name="dirName" />
+            <PropertyRef Name="Library_libId" />
+            <PropertyRef Name="dirCreateDate" />
+          </Key>
+          <Property Name="dirId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nodeLevel" Type="Int16" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="dirName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Library_libId" Type="Int32" Nullable="false" />
+          <Property Name="dirCreateDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Library" Relationship="Self.FK_DirectoryLibrary" FromRole="Directories" ToRole="Libraries" />
+        </EntityType>
+        <Association Name="FK_Document_OriginalUser">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="Documents" Type="Self.Document" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="User">
+            <Principal Role="Users">
               <PropertyRef Name="userId" />
             </Principal>
-            <Dependent Role="Document">
+            <Dependent Role="Documents">
               <PropertyRef Name="User_userId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ShareDocument">
+          <End Role="Documents" Type="Self.Document" Multiplicity="1" />
+          <End Role="Shares" Type="Self.Share" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Documents">
+              <PropertyRef Name="docId" />
+            </Principal>
+            <Dependent Role="Shares">
+              <PropertyRef Name="Document_docId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DirectoryLibrary">
+          <End Role="Libraries" Type="Self.Library" Multiplicity="1" />
+          <End Role="Directories" Type="Self.Directory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Libraries">
+              <PropertyRef Name="libId" />
+            </Principal>
+            <Dependent Role="Directories">
+              <PropertyRef Name="Library_libId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LibraryUser">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="Libraries" Type="Self.Library" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="userId" />
+            </Principal>
+            <Dependent Role="Libraries">
+              <PropertyRef Name="User_userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="DocumentUser">
+          <End Role="Documents" Type="Self.Document" Multiplicity="*" />
+          <End Role="Users" Type="Self.User" Multiplicity="*" />
+        </Association>
+        <Association Name="ShareUser">
+          <End Role="Shares" Type="Self.Share" Multiplicity="*" />
+          <End Role="Users" Type="Self.User" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="IntelliDocsEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Documents" EntityType="Self.Document" />
+          <EntitySet Name="Libraries" EntityType="Self.Library" />
+          <EntitySet Name="Shares" EntityType="Self.Share" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="Directories" EntityType="Self.Directory" />
+          <AssociationSet Name="FK_Document_OriginalUser" Association="Self.FK_Document_OriginalUser">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Documents" EntitySet="Documents" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShareDocument" Association="Self.FK_ShareDocument">
+            <End Role="Documents" EntitySet="Documents" />
+            <End Role="Shares" EntitySet="Shares" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DirectoryLibrary" Association="Self.FK_DirectoryLibrary">
+            <End Role="Libraries" EntitySet="Libraries" />
+            <End Role="Directories" EntitySet="Directories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LibraryUser" Association="Self.FK_LibraryUser">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Libraries" EntitySet="Libraries" />
+          </AssociationSet>
+          <AssociationSet Name="DocumentUser" Association="Self.DocumentUser">
+            <End Role="Documents" EntitySet="Documents" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="ShareUser" Association="Self.ShareUser">
+            <End Role="Shares" EntitySet="Shares" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
-      <Mapping xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs" Space="C-S">
-        <Alias Key="Model" Value="IntelliDocsDB" />
-        <Alias Key="Target" Value="IntelliDocsDB.Store" />
-        <EntityContainerMapping CdmEntityContainer="IntelliDocsDBContainer" StorageEntityContainer="IntelliDocsDBTargetContainer">
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="IntelliDocsModelStoreContainer" CdmEntityContainer="IntelliDocsEntities">
+          <EntitySetMapping Name="Documents">
+            <EntityTypeMapping TypeName="IntelliDocsModel.Document">
+              <MappingFragment StoreEntitySet="Documents">
+                <ScalarProperty Name="docId" ColumnName="docId" />
+                <ScalarProperty Name="docName" ColumnName="docName" />
+                <ScalarProperty Name="Directory_nodeId" ColumnName="Directory_nodeId" />
+                <ScalarProperty Name="docCreatedDate" ColumnName="docCreatedDate" />
+                <ScalarProperty Name="User_userId" ColumnName="User_userId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Libraries">
+            <EntityTypeMapping TypeName="IntelliDocsModel.Library">
+              <MappingFragment StoreEntitySet="Libraries">
+                <ScalarProperty Name="libId" ColumnName="libId" />
+                <ScalarProperty Name="libCreatedDate" ColumnName="libCreatedDate" />
+                <ScalarProperty Name="User_userId" ColumnName="User_userId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Shares">
+            <EntityTypeMapping TypeName="IntelliDocsModel.Share">
+              <MappingFragment StoreEntitySet="Shares">
+                <ScalarProperty Name="shrId" ColumnName="shrId" />
+                <ScalarProperty Name="shrCreatedDate" ColumnName="shrCreatedDate" />
+                <ScalarProperty Name="Directory_nodeId" ColumnName="Directory_nodeId" />
+                <ScalarProperty Name="Document_docId" ColumnName="Document_docId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="IntelliDocsModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="IntelliDocsModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="userId" ColumnName="userId" />
+                <ScalarProperty Name="userEmailAddress" ColumnName="userEmailAddress" />
+                <ScalarProperty Name="userFirstName" ColumnName="userFirstName" />
+                <ScalarProperty Name="userLastName" ColumnName="userLastName" />
+                <ScalarProperty Name="userCreatedDate" ColumnName="userCreatedDate" />
+                <ScalarProperty Name="userPassword" ColumnName="userPassword" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Directories">
+            <EntityTypeMapping TypeName="IntelliDocsModel.Directory">
+              <MappingFragment StoreEntitySet="Directories">
+                <ScalarProperty Name="dirId" ColumnName="dirId" />
+                <ScalarProperty Name="nodeLevel" ColumnName="nodeLevel" />
+                <ScalarProperty Name="dirName" ColumnName="dirName" />
+                <ScalarProperty Name="Library_libId" ColumnName="Library_libId" />
+                <ScalarProperty Name="dirCreateDate" ColumnName="dirCreateDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="DocumentUser" TypeName="IntelliDocsModel.DocumentUser" StoreEntitySet="DocumentUser">
+            <EndProperty Name="Documents">
+              <ScalarProperty Name="docId" ColumnName="Documents_docId" />
+            </EndProperty>
+            <EndProperty Name="Users">
+              <ScalarProperty Name="userId" ColumnName="Users_userId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="ShareUser" TypeName="IntelliDocsModel.ShareUser" StoreEntitySet="ShareUser">
+            <EndProperty Name="Shares">
+              <ScalarProperty Name="shrId" ColumnName="Shares_shrId" />
+            </EndProperty>
+            <EndProperty Name="Users">
+              <ScalarProperty Name="userId" ColumnName="Users_userId" />
+            </EndProperty>
+          </AssociationSetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>
   <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
-  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
-    <edmx:Connection>
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
       </DesignerInfoPropertySet>
-    </edmx:Connection>
-    <edmx:Options>
+    </Connection>
+    <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
       </DesignerInfoPropertySet>
-    </edmx:Options>
+    </Options>
     <!-- Diagram content (shape and connector positions) -->
-    <edmx:Diagrams>
-    </edmx:Diagrams>
-  </edmx:Designer>
+    <Diagrams></Diagrams>
+  </Designer>
 </edmx:Edmx>
