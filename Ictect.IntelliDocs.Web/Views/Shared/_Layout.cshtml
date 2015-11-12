@@ -29,7 +29,7 @@
 <div id="footer-container">
     @* We may not need a footer *@
 </div>
-
+@RenderSection("Scripts", false)
 <script>
     IntelliDocs.baseUrl = "@($"{Request.Url.Scheme}://{Request.Url.Authority}{Url.Content("~")}")";
 </script>
