@@ -18,19 +18,19 @@ namespace Ictect.IntelliDocs.Web.Models
         public Document()
         {
             this.Shares = new HashSet<Share>();
-            this.Users = new HashSet<User>();
+            this.AspNetUsers = new HashSet<AspNetUser>();
         }
     
         public int docId { get; set; }
         public string docName { get; set; }
         public int Directory_nodeId { get; set; }
         public System.DateTime docCreatedDate { get; set; }
-        public int User_userId { get; set; }
+        public string User_userId { get; set; }
     
-        public virtual User User { get; set; }
+        public virtual AspNetUser AspNetUser { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Share> Shares { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<AspNetUser> AspNetUsers { get; set; }
     }
 }

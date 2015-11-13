@@ -22,10 +22,10 @@ namespace Ictect.IntelliDocs.Web.Models
     
         public int libId { get; set; }
         public System.DateTime libCreatedDate { get; set; }
-        public int User_userId { get; set; }
+        public string AspNetUser_Id { get; set; }
     
+        public virtual AspNetUser AspNetUser { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Directory> Directories { get; set; }
-        public virtual User User { get; set; }
     }
 }

@@ -14,12 +14,21 @@ namespace Ictect.IntelliDocs.Web.Models
     
     public partial class Directory
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Directory()
+        {
+            this.Directories1 = new HashSet<Directory>();
+        }
+    
         public int dirId { get; set; }
-        public Nullable<short> nodeLevel { get; set; }
         public string dirName { get; set; }
         public int Library_libId { get; set; }
         public System.DateTime dirCreateDate { get; set; }
+        public int dirParentId { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Directory> Directories1 { get; set; }
+        public virtual Directory Directory1 { get; set; }
         public virtual Library Library { get; set; }
     }
 }

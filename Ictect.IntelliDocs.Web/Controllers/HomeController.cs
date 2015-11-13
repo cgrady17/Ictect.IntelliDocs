@@ -7,6 +7,7 @@ using Ictect.IntelliDocs.Web.Models;
 
 namespace Ictect.IntelliDocs.Web.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         // GET: Home

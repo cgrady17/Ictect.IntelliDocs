@@ -79,6 +79,11 @@ namespace Ictect.IntelliDocs.Web.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [StringLength(128, ErrorMessage = "The {0} must be at least 5 characters long.", MinimumLength = 5)]
+        [Display(Name = "Title")]
+        public string Title { get; set; }
     }
 
     public class ResetPasswordViewModel

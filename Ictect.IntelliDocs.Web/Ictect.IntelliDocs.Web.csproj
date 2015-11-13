@@ -165,24 +165,24 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
-    <EntityDeploy Include="Models\IntelliDocsDB.edmx">
+    <EntityDeploy Include="Models\IntelliDocs.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>IntelliDocsDB.Designer.cs</LastGenOutput>
+      <LastGenOutput>IntelliDocs.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\IntelliDocsDB.edmx.diagram">
-      <DependentUpon>IntelliDocsDB.edmx</DependentUpon>
+    <Content Include="Models\IntelliDocs.edmx.diagram">
+      <DependentUpon>IntelliDocs.edmx</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\BFN Buffalo.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
-    <Content Include="Models\IntelliDocsDB.Context.tt">
+    <Content Include="Models\IntelliDocs.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>IntelliDocsDB.edmx</DependentUpon>
-      <LastGenOutput>IntelliDocsDB.Context.cs</LastGenOutput>
+      <DependentUpon>IntelliDocs.edmx</DependentUpon>
+      <LastGenOutput>IntelliDocs.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\IntelliDocsDB.tt">
+    <Content Include="Models\IntelliDocs.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>IntelliDocsDB.edmx</DependentUpon>
-      <LastGenOutput>IntelliDocsDB.cs</LastGenOutput>
+      <DependentUpon>IntelliDocs.edmx</DependentUpon>
+      <LastGenOutput>IntelliDocs.cs</LastGenOutput>
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -206,41 +206,56 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AspNetRole.cs">
+      <DependentUpon>IntelliDocs.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AspNetUser.cs">
+      <DependentUpon>IntelliDocs.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AspNetUserClaim.cs">
+      <DependentUpon>IntelliDocs.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AspNetUserLogin.cs">
+      <DependentUpon>IntelliDocs.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AspNetUserRole.cs">
+      <DependentUpon>IntelliDocs.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\C__MigrationHistory.cs">
+      <DependentUpon>IntelliDocs.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Directory.cs">
-      <DependentUpon>IntelliDocsDB.tt</DependentUpon>
+      <DependentUpon>IntelliDocs.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Document-Expanded.cs" />
     <Compile Include="Models\Document.cs">
-      <DependentUpon>IntelliDocsDB.tt</DependentUpon>
+      <DependentUpon>IntelliDocs.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\IntelliDocsDB.Context.cs">
+    <Compile Include="Models\IntelliDocs.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>IntelliDocsDB.Context.tt</DependentUpon>
+      <DependentUpon>IntelliDocs.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\IntelliDocsDB.cs">
+    <Compile Include="Models\IntelliDocs.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>IntelliDocsDB.tt</DependentUpon>
+      <DependentUpon>IntelliDocs.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\IntelliDocsDB.Designer.cs">
+    <Compile Include="Models\IntelliDocs.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>IntelliDocsDB.edmx</DependentUpon>
+      <DependentUpon>IntelliDocs.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\Library.cs">
-      <DependentUpon>IntelliDocsDB.tt</DependentUpon>
+      <DependentUpon>IntelliDocs.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Share.cs">
-      <DependentUpon>IntelliDocsDB.tt</DependentUpon>
+      <DependentUpon>IntelliDocs.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagram.cs">
-      <DependentUpon>IntelliDocsDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\User.cs">
-      <DependentUpon>IntelliDocsDB.tt</DependentUpon>
+      <DependentUpon>IntelliDocs.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />

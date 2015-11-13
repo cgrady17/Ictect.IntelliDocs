@@ -18,11 +18,11 @@ namespace Ictect.IntelliDocs.Web.Models
             string id = this.docId.ToString();
 
             Directory parentDir = db.Directories.Find(this.Directory_nodeId);
-            int dirLevel = parentDir.nodeLevel ?? 0;
+            int dirParentId = parentDir.dirParentId;
 
             List<string> dirs = new List<string>();
 
-            for (int i = 0; i < dirLevel; i++)
+            for (int i = 0; i < dirParentId; i++)
             {
                 
             }

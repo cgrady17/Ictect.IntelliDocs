@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="66765d615bbb4bd99f9bfd5ae9fab8ac" Name="Diagram1">
+        <EntityTypeShape EntityType="IntelliDocsModel.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IntelliDocsModel.AspNetRole" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IntelliDocsModel.AspNetUserClaim" Width="1.5" PointX="7.5" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="IntelliDocsModel.AspNetUserLogin" Width="1.5" PointX="7.5" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="IntelliDocsModel.AspNetUserRole" Width="1.5" PointX="7.5" PointY="6.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="IntelliDocsModel.AspNetUser" Width="1.5" PointX="5.25" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="IntelliDocsModel.Directory" Width="1.5" PointX="9.75" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="IntelliDocsModel.Document" Width="1.5" PointX="0.75" PointY="5.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="IntelliDocsModel.Library" Width="1.5" PointX="7.5" PointY="9.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="IntelliDocsModel.Share" Width="1.5" PointX="3" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="IntelliDocsModel.sysdiagram" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="IntelliDocsModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="IntelliDocsModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="IntelliDocsModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="IntelliDocsModel.FK_Document_OriginalUser" ManuallyRouted="false" />
+        <AssociationConnector Association="IntelliDocsModel.FK_LibraryUser" ManuallyRouted="false" />
+        <AssociationConnector Association="IntelliDocsModel.FK_Directories_Hierarchy" ManuallyRouted="false" />
+        <AssociationConnector Association="IntelliDocsModel.FK_DirectoryLibrary" ManuallyRouted="false" />
+        <AssociationConnector Association="IntelliDocsModel.FK_ShareDocument" ManuallyRouted="false" />
+        <AssociationConnector Association="IntelliDocsModel.DocumentUser" ManuallyRouted="false" />
+        <AssociationConnector Association="IntelliDocsModel.ShareUser" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
