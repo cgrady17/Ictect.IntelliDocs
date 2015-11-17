@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -8,6 +9,8 @@ namespace Ictect.IntelliDocs.Web.Models
     public class ApplicationUser : IdentityUser
     {
         public string Title { get; set; }
+
+        public DateTime CreatedDate { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
@@ -21,7 +24,7 @@ namespace Ictect.IntelliDocs.Web.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("IntelliDocsEntities", throwIfV1Schema: false)
+            : base("IntelliDocsSecureEntities", throwIfV1Schema: false)
         {
         }
 

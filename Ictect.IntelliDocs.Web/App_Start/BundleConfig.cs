@@ -20,6 +20,13 @@ namespace Ictect.IntelliDocs.Web
                 "~/Scripts/IntelliDocs/IntelliDocs.js"
                 );
             bundles.Add(jsBundle);
+
+            ScriptBundle jqueryValBundle = new ScriptBundle("~/Scripts/jQueryVal");
+            jqueryValBundle.Include(
+                "~/Scripts/jquery.validate.js",
+                "~/Scripts/jquery.validate.unobtrusive.js"
+                );
+            bundles.Add(jqueryValBundle);
         }
     }
 }

@@ -58,6 +58,10 @@ h1, h2, h3, h4, h5, h6 {
         margin-left: 10px;
     }
 
+        #header-container > header div#header-actions:not(:first-of-type) {
+            margin-left: 15px;
+        }
+
         #header-container > header div#header-actions a > span {
             margin-right: 5px;
         }

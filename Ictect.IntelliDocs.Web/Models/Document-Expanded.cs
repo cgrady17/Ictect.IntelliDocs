@@ -22,9 +22,13 @@ namespace Ictect.IntelliDocs.Web.Models
 
             List<string> dirs = new List<string>();
 
-            for (int i = 0; i < dirParentId; i++)
+            Directory tempDir = parentDir;
+
+            while (tempDir.dirParentId > 0)
             {
-                
+                // Add this ID to path
+
+                // set tempDir to it's parent
             }
 
             return ""; // Test
