@@ -5,6 +5,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using System;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -12,10 +13,23 @@ namespace Ictect.IntelliDocs.Web
 {
     public class EmailService : IIdentityMessageService
     {
-        public Task SendAsync(IdentityMessage message)
+        public async Task SendAsync(IdentityMessage message)
         {
-            // Plug in your email service here to send an email.
-            return Task.FromResult(0);
+            MailMessage email = new MailMessage()
+            {
+                Body = message.Body,
+                BodyEncoding = System.Text.Encoding.UTF8,
+                From = new MailAddress("no-reply@ictect.com", "Ictect IntelliDocs"),
+                IsBodyHtml = true,
+                Subject = message.Subject
+            };
+
+            email.To.Add(message.Destination);
+
+            using (SmtpClient smtp = new SmtpClient())
+            {
+                await smtp.SendMailAsync(email);
+            }
         }
     }
 

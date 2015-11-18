@@ -22,7 +22,7 @@ namespace Ictect.IntelliDocs.Web.Extensions
             using (IntelliDocsEntities db = new IntelliDocsEntities())
             {
                 string userId = identity.GetUserId();
-                IReadOnlyList<Library> userLibraries = await db.Libraries.Where(x => x.AspNetUser_Id == userId).OrderByDescending(x => x.libCreatedDate).ToListAsync();
+                IReadOnlyList<Library> userLibraries = await db.Libraries.Where(x => x.AspNetUser_Id == userId).OrderByDescending(x => x.libCreatedDate).Include(x => x.Directories).ToListAsync();
                 userLibrary = userLibraries.FirstOrDefault();
 
                 if (userLibrary == null)

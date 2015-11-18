@@ -6,27 +6,54 @@
  */
 "use strict";
 
-/* Appends the Splash Page to the page and then removes it after 2 seconds */
-var initSplash = function (timeout) {
-    $.get(IntelliDocs.baseUrl + "Home/SplashPage", function(data) {
-        $("body").append(data).addClass("no-scroll");
-        setTimeout(function() {
-            $("body").removeClass("no-scroll");
-            $("#splash-container").remove();
-        }, timeout || 2000);
-    });
-};
-
-// Instantiate the IntelliDocs Object
-var initIntelliDocs = function () {
-    var intelliDocsObj = {
-        showSplash: function (timeout) {
-            return initSplash(timeout);
-        },
-        baseUrl: "http://localhost/IntelliDocs/"
+(function () {
+    /* Appends the Splash Page to the page and then removes it after 2 seconds */
+    var initSplash = function (timeout) {
+        $.get(IntelliDocs.baseUrl + "Home/SplashPage", function (data) {
+            $("body").append(data).addClass("no-scroll");
+            setTimeout(function () {
+                $("body").removeClass("no-scroll");
+                $("#splash-container").remove();
+            }, timeout || 2000);
+        });
     };
 
-    window.IntelliDocs = intelliDocsObj;
-};
-// Call initIntelliDocs to instantiate and add IntelliDocs to window
-initIntelliDocs();
+    // Instantiate the IntelliDocs Object
+    var initIntelliDocs = function () {
+        var intelliDocsObj = {
+            showSplash: function (timeout) {
+                return initSplash(timeout);
+            },
+            baseUrl: "http://localhost/IntelliDocs/",
+            uploadDoc: function () {
+                return uploadDocument();
+            },
+            newFolder: function () {
+                return newFolder();
+            }
+        };
+
+        window.IntelliDocs = intelliDocsObj;
+    };
+    // Call initIntelliDocs to instantiate and add IntelliDocs to window
+    initIntelliDocs();
+
+    var uploadDocument = function () {
+        alert("Coming Soon!");
+    };
+
+    var newFolder = function () {
+        alert("Coming Soon!");
+    };
+})(window);
+
+/* jQuery-dependent */
+$(function () {
+    $("[data-action='upload']").click(function (e) {
+        return IntelliDocs.uploadDoc();
+    });
+
+    $("[data-action='new-folder']").click(function (e) {
+        return IntelliDocs.newFolder();
+    });
+});

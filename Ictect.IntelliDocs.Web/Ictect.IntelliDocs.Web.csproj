@@ -172,6 +172,7 @@
     <Content Include="Models\IntelliDocs.edmx.diagram">
       <DependentUpon>IntelliDocs.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\BFN Buffalo Dev.pubxml" />
     <None Include="Properties\PublishProfiles\BFN Buffalo.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Models\IntelliDocs.Context.tt">
@@ -295,6 +296,8 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Shared\Info.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

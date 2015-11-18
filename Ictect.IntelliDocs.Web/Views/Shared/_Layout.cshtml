@@ -15,12 +15,15 @@
             {
                 <input type="text" id="header-search" placeholder="Search anything..." />
                 <div id="header-actions">
-                    <a href="#" id="header-upload"><span class="glyphicon glyphicon-cloud-upload"></span>Upload</a>
-                    <a href="#" id="header-new-folder"><span class="glyphicon glyphicon-plus-sign"></span>New Folder</a>
+                    <a href="#" id="header-upload" data-action="upload" title="Upload a New Document"><span class="glyphicon glyphicon-cloud-upload"></span>Upload</a>
+                    <a href="#" id="header-new-folder" data-action="new-folder" title="Create a New Folder"><span class="glyphicon glyphicon-plus-sign"></span>New Folder</a>
                 </div>
                 <ul id="header-settings">
                     <li>
-                        <a href="#" id="header-settings-btn"><span class="glyphicon glyphicon-cog"></span></a>
+                        <a href="@Url.Action("Index", "Manage")" id="header-settings-btn" title="Manage Your Account"><span class="glyphicon glyphicon-cog"></span></a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("LogOff", "Account")" id="header-logoff" title="Log Off"><span class="glyphicon glyphicon-off"></span></a>
                     </li>
                 </ul>
             }
