@@ -27,7 +27,7 @@ namespace Ictect.IntelliDocs.Web.Controllers
             using (IntelliDocsEntities db = new IntelliDocsEntities())
             {
                 string userId = User.Identity.GetUserId();
-                rootDocuments = await db.Documents.Where(x => x.AspNetUser.Id == userId && x.docId == 0).ToListAsync();
+                rootDocuments = await db.Documents.Where(x => x.AspNetUser.Id == userId && x.Directory_nodeId == 0).ToListAsync();
             }
 
             ViewBag.RootDocuments = rootDocuments;

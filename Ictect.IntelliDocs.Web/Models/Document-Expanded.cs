@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ictect.IntelliDocs.Web.Models
 {
@@ -18,20 +14,27 @@ namespace Ictect.IntelliDocs.Web.Models
             string id = this.docId.ToString();
 
             Directory parentDir = db.Directories.Find(this.Directory_nodeId);
-            int dirParentId = parentDir.dirParentId;
-
-            List<string> dirs = new List<string>();
 
             Directory tempDir = parentDir;
 
-            while (tempDir.dirParentId > 0)
-            {
-                // Add this ID to path
+            List<string> pathParts = new List<string>();
+            pathParts.Add(id);
+            pathParts.Add(parentDir.dirId.ToString());
 
-                // set tempDir to it's parent
+            while (tempDir.dirParentId > 0 && tempDir.Directory1 != null)
+            {
+                pathParts.Add(tempDir.Directory1.dirId.ToString());
+                tempDir = parentDir.Directory1;
             }
 
-            return ""; // Test
+            string path = basePath;
+
+            for (int i = pathParts.Count; i > 0; i--)
+            {
+                path += pathParts[i];
+            }
+
+            return path; // Test
         }
     }
 }
