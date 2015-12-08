@@ -17,9 +17,9 @@ html, body {
     background-color: #FFF;
 }
 
-body.no-scroll {
-    overflow: hidden;
-}
+    body.no-scroll {
+        overflow: hidden;
+    }
 
 /* Anchors */
 a {
@@ -35,6 +35,50 @@ a {
 h1, h2, h3, h4, h5, h6 {
     font-weight: 200;
 }
+
+/* Icons */
+.icon-stack {
+    position: relative;
+}
+
+    .icon-stack .glyphicon {
+        position: absolute;
+    }
+
+/* Dialog */
+.dialog-overlay {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 7;
+    position: absolute;
+}
+
+.dialog-container {
+    width: 100%;
+    background: #FFF;
+    height: 175px;
+    top: 50%;
+    position: relative;
+    transform: translateY(-50%);
+    text-align: center;
+}
+
+    .dialog-container > .dialog-body {
+        width: 700px;
+        margin: 0 auto;
+        padding-top: 20px;
+    }
+
+        .dialog-container > .dialog-body > h2 {
+            text-align: left;
+        }
+
+        .dialog-container > .dialog-body > p {
+            text-align: left;
+        }
 
 /* Header */
 #header-container {
@@ -192,14 +236,12 @@ h1, h2, h3, h4, h5, h6 {
         display: inline-block;
         text-align: center;
         font-size: 1.5rem;
-        -ms-border-radius: 3px;
         border-radius: 3px;
     }
 
         #library-grid .library-grid-item:hover {
             border: 1px solid #999;
             -webkit-box-shadow: 0 0 15px 0 #999;
-            -ms-box-shadow: 0 0 15px 0 #999;
             box-shadow: 0 0 15px 0 #999;
             text-decoration: none;
         }
@@ -220,6 +262,36 @@ h1, h2, h3, h4, h5, h6 {
             margin: 10px;
             display: block;
             font-size: 4rem;
+        }
+
+        #library-grid .library-grid-item.library-folder-new {
+            position: relative;
+        }
+
+        #library-grid .library-grid-item.library-folder-new .glyphicon {
+            margin: 10px;
+            display: block;
+            font-size: 4rem;
+        }
+
+        #library-grid .library-grid-item.library-folder-new .glyphicon-plus {
+            color: #FFF;
+            font-size: 2rem;
+            position: absolute;
+            left: 0;
+            right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            top: 25px;
+        }
+
+        #library-grid .library-grid-item input {
+            border: none;
+            font-size: 1.5rem;
+        }
+
+        #library-grid .library-grid-item input[placeholder] {
+            text-align: center;
         }
 
 /* Splash Page */

@@ -3,21 +3,13 @@
 @{
     ViewBag.Title = "Home";
 }
-<h2 class="page-title">Your Document Library</h2>
 
-<div id="library-grid">
-    @foreach (Ictect.IntelliDocs.Web.Models.Directory dirLevelOne in Model.Directories.Where(x => x.dirParentId == 0))
-    {
-        <a href="#" class="library-grid-item library-folder" data-dirid="@dirLevelOne.dirId">@dirLevelOne.dirName</a>
-    }
-    @foreach (Document docLevelOne in ViewBag.RootDocuments)
-    {
-        <a href="#" class="library-grid-item library-doc" data-docid="@docLevelOne.docId">@docLevelOne.docName</a>
-    }
+<div id="library-content">
+    @{ Html.RenderAction("LoadDirectory", "Library", new { @dirId = Model.RootDirectory.dirId, @libraryId = Model.libId }); }
 </div>
-
 <script>
     $(function () {
-        IntelliDocs.showSplash();
+        //IntelliDocs.showSplash();
+        IntelliDocs.setLibrary(@Model.RootDirectory.dirId, 0, @Model.libId);
     });
 </script>

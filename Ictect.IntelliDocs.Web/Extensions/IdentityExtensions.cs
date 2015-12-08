@@ -22,7 +22,7 @@ namespace Ictect.IntelliDocs.Web.Extensions
             using (IntelliDocsEntities db = new IntelliDocsEntities())
             {
                 string userId = identity.GetUserId();
-                IReadOnlyList<Library> userLibraries = await db.Libraries.Where(x => x.AspNetUser_Id == userId).OrderByDescending(x => x.libCreatedDate).Include(x => x.Directories).ToListAsync();
+                IReadOnlyList<Library> userLibraries = await db.Libraries.Where(x => x.AspNetUser_Id == userId).OrderByDescending(x => x.libCreatedDate).Include(x => x.Directories.Select(dir => dir.Documents)).ToListAsync();
                 userLibrary = userLibraries.FirstOrDefault();
 
                 if (userLibrary == null)
@@ -36,11 +36,55 @@ namespace Ictect.IntelliDocs.Web.Extensions
         }
 
         /// <summary>
+        /// Retrieve the Library with the specified Library ID.
+        /// </summary>
+        /// <param name="identity">The inferring IIdentity of the User.</param>
+        /// <returns>The Library matching the specified Library ID.</returns>
+        public static Library GetLibrary(this IIdentity identity, int libraryId)
+        {
+            Library userLibrary = null;
+            using (IntelliDocsEntities db = new IntelliDocsEntities())
+            {
+                string userId = identity.GetUserId();
+                userLibrary = db.Libraries.Where(x => x.libId == libraryId && x.AspNetUser_Id == userId).FirstOrDefault();
+            }
+
+            if (userLibrary.AspNetUser_Id != identity.GetUserId())
+            {
+                return null;
+            }
+
+            return userLibrary;
+        }
+
+        /// <summary>
+        /// Asynchronously retrieve the Library with the specified Library ID.
+        /// </summary>
+        /// <param name="identity">The inferring IIdentity of the User.</param>
+        /// <returns>The Library matching the specified Library ID.</returns>
+        public static async Task<Library> GetLibraryAsync(this IIdentity identity, int libraryId)
+        {
+            Library userLibrary = null;
+            using (IntelliDocsEntities db = new IntelliDocsEntities())
+            {
+                string userId = identity.GetUserId();
+                userLibrary = await db.Libraries.Where(x => x.libId == libraryId && x.AspNetUser_Id == userId).FirstOrDefaultAsync();
+            }
+
+            if (userLibrary.AspNetUser_Id != identity.GetUserId())
+            {
+                return null;
+            }
+
+            return userLibrary;
+        }
+
+        /// <summary>
         /// Asynchronously creates a new Library entity for the specified User.
         /// </summary>
         /// <param name="userId">The User ID of the User for which to create a new Library.</param>
         /// <returns>The newly created Library entity.</returns>
-        private static async Task<Library> CreateLibrary(string userId)
+        public static async Task<Library> CreateLibrary(string userId)
         {
             using (IntelliDocsEntities db = new IntelliDocsEntities())
             {

@@ -2,16 +2,18 @@
 
 @{
     ViewBag.Title = "Error";
+    string errorMessage = ViewBag.errorMessage ?? (Model != null ? Model.Exception != null ? Model.Exception.Message : null : null);
 }
 
 <h1 class="text-danger">Error.</h1>
 @{
-    if (String.IsNullOrEmpty(ViewBag.errorMessage))
+    if (String.IsNullOrEmpty(errorMessage))
     {
+        
         <h2 class="text-danger">An error occurred while processing your request.</h2>
     }
     else
     {
-        <h2 class="text-danger">@ViewBag.errorMessage</h2>
+        <h2 class="text-danger">@errorMessage</h2>
     }
 }

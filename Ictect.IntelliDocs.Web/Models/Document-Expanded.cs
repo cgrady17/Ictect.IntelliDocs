@@ -11,9 +11,9 @@ namespace Ictect.IntelliDocs.Web.Models
         {
             string basePath = ConfigurationManager.AppSettings["LibraryBasePath"];
 
-            string id = this.docId.ToString();
+            string id = docId.ToString();
 
-            Directory parentDir = db.Directories.Find(this.Directory_nodeId);
+            Directory parentDir = db.Directories.Find(dirId);
 
             Directory tempDir = parentDir;
 
@@ -21,18 +21,17 @@ namespace Ictect.IntelliDocs.Web.Models
             pathParts.Add(id);
             pathParts.Add(parentDir.dirId.ToString());
 
-            while (tempDir.dirParentId > 0 && tempDir.Directory1 != null)
+            while (tempDir.dirParentId > 0 && tempDir.ParentDirectory != null)
             {
-                pathParts.Add(tempDir.Directory1.dirId.ToString());
-                tempDir = parentDir.Directory1;
+                pathParts.Add(tempDir.ParentDirectory.dirId.ToString());
+                tempDir = parentDir.ParentDirectory;
             }
 
             string path = basePath;
 
-            for (int i = pathParts.Count; i > 0; i--)
-            {
-                path += pathParts[i];
-            }
+            pathParts.Reverse();
+
+            path += string.Join("/", pathParts);
 
             return path; // Test
         }

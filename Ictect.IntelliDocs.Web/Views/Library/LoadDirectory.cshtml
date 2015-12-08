@@ -1,0 +1,25 @@
+﻿@using Ictect.IntelliDocs.Web.Models
+@model Ictect.IntelliDocs.Web.Models.Directory
+
+<h2 class="page-title">@Model.PathLinks</h2>
+<div id="library-grid">
+    <a href="#" class="library-grid-item library-folder-new" data-action="new-folder">
+        <span class="glyphicon glyphicon-folder-close"></span>
+        <span class="glyphicon glyphicon-plus"></span>
+        <input type="text" placeholder="Create New Folder" id="new-folder-name" />
+    </a>
+    @foreach (Ictect.IntelliDocs.Web.Models.Directory dirLevelOne in Model.ChildDirectories)
+    {
+        <a href="#" class="library-grid-item library-folder" data-dirid="@dirLevelOne.dirId">@dirLevelOne.dirName</a>
+    }
+    @foreach (Document docLevelOne in Model.Documents)
+    {
+        <a href="#" class="library-grid-item library-doc" data-docid="@docLevelOne.docId">@docLevelOne.docName</a>
+    }
+</div>
+
+<script>
+    $(function () {
+        IntelliDocs.setLibrary(@Model.dirId, @Html.Raw(Model.dirParentId.HasValue ? Model.dirParentId.Value : 0), @Model.Library_libId);
+    });
+</script>

@@ -1,0 +1,8 @@
+﻿@using Ictect.IntelliDocs.Web.Models
+@{ 
+    ViewBag.Title = "Your Shares";
+    IReadOnlyList<Ictect.IntelliDocs.Web.Models.Directory> Directories = ViewBag.Directories as List<Ictect.IntelliDocs.Web.Models.Directory>;
+    IReadOnlyList<Document> Documents = ViewBag.Documents as List<Document>;
+}
+
+<h2 class="page-title">Here's what others have Shared with You</h2>

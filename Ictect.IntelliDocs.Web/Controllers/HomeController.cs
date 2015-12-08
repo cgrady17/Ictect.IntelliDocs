@@ -1,9 +1,5 @@
 ﻿using Ictect.IntelliDocs.Web.Extensions;
 using Ictect.IntelliDocs.Web.Models;
-using Microsoft.AspNet.Identity;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -21,16 +17,6 @@ namespace Ictect.IntelliDocs.Web.Controllers
         {
             // Get the User's Library
             Library userLibrary = await User.Identity.GetLibraryAsync();
-
-            // Get the User's Root Documents
-            IReadOnlyList<Document> rootDocuments = null;
-            using (IntelliDocsEntities db = new IntelliDocsEntities())
-            {
-                string userId = User.Identity.GetUserId();
-                rootDocuments = await db.Documents.Where(x => x.AspNetUser.Id == userId && x.Directory_nodeId == 0).ToListAsync();
-            }
-
-            ViewBag.RootDocuments = rootDocuments;
 
             return View(userLibrary);
         }

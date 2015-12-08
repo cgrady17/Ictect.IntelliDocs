@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="IntelliDocsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="IntelliDocsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="__MigrationHistory">
           <Key>
             <PropertyRef Name="MigrationId" />
@@ -76,7 +76,7 @@
           <Property Name="dirName" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Library_libId" Type="int" Nullable="false" />
           <Property Name="dirCreateDate" Type="datetime" Nullable="false" />
-          <Property Name="dirParentId" Type="int" Nullable="false" />
+          <Property Name="dirParentId" Type="int" />
         </EntityType>
         <EntityType Name="Documents">
           <Key>
@@ -84,7 +84,7 @@
           </Key>
           <Property Name="docId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="docName" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="Directory_nodeId" Type="int" Nullable="false" />
+          <Property Name="dirId" Type="int" Nullable="false" />
           <Property Name="docCreatedDate" Type="datetime" Nullable="false" />
           <Property Name="User_userId" Type="nvarchar" MaxLength="128" Nullable="false" />
         </EntityType>
@@ -173,18 +173,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Directories_Hierarchy">
-          <End Role="Directories" Type="Self.Directories" Multiplicity="1" />
-          <End Role="Directories1" Type="Self.Directories" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Directories">
-              <PropertyRef Name="dirId" />
-            </Principal>
-            <Dependent Role="Directories1">
-              <PropertyRef Name="dirParentId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_DirectoryLibrary">
           <End Role="Libraries" Type="Self.Libraries" Multiplicity="1" />
           <End Role="Directories" Type="Self.Directories" Multiplicity="*" />
@@ -206,6 +194,18 @@
             </Principal>
             <Dependent Role="Documents">
               <PropertyRef Name="User_userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Documents_Directories">
+          <End Role="Directories" Type="Self.Directories" Multiplicity="1" />
+          <End Role="Documents" Type="Self.Documents" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Directories">
+              <PropertyRef Name="dirId" />
+            </Principal>
+            <Dependent Role="Documents">
+              <PropertyRef Name="dirId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -307,16 +307,16 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
           </AssociationSet>
-          <AssociationSet Name="FK_Directories_Hierarchy" Association="Self.FK_Directories_Hierarchy">
-            <End Role="Directories" EntitySet="Directories" />
-            <End Role="Directories1" EntitySet="Directories" />
-          </AssociationSet>
           <AssociationSet Name="FK_DirectoryLibrary" Association="Self.FK_DirectoryLibrary">
             <End Role="Libraries" EntitySet="Libraries" />
             <End Role="Directories" EntitySet="Directories" />
           </AssociationSet>
           <AssociationSet Name="FK_Document_OriginalUser" Association="Self.FK_Document_OriginalUser">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Documents" EntitySet="Documents" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Documents_Directories" Association="Self.FK_Documents_Directories">
+            <End Role="Directories" EntitySet="Directories" />
             <End Role="Documents" EntitySet="Documents" />
           </AssociationSet>
           <AssociationSet Name="FK_DocumentUser_Document" Association="Self.FK_DocumentUser_Document">
@@ -344,8 +344,7 @@
             <End Role="ShareUser" EntitySet="ShareUser" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="IntelliDocsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -430,10 +429,9 @@
           <Property Name="dirName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Library_libId" Type="Int32" Nullable="false" />
           <Property Name="dirCreateDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="dirParentId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Directories1" Relationship="Self.FK_Directories_Hierarchy" FromRole="Directories" ToRole="Directories1" />
-          <NavigationProperty Name="Directory1" Relationship="Self.FK_Directories_Hierarchy" FromRole="Directories1" ToRole="Directories" />
+          <Property Name="dirParentId" Type="Int32" />
           <NavigationProperty Name="Library" Relationship="Self.FK_DirectoryLibrary" FromRole="Directories" ToRole="Libraries" />
+          <NavigationProperty Name="Documents" Relationship="IntelliDocsModel.FK_Documents_Directories" FromRole="Directory" ToRole="Document" />
         </EntityType>
         <EntityType Name="Document">
           <Key>
@@ -441,12 +439,13 @@
           </Key>
           <Property Name="docId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="docName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Directory_nodeId" Type="Int32" Nullable="false" />
           <Property Name="docCreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="User_userId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="AspNetUser" Relationship="Self.FK_Document_OriginalUser" FromRole="Documents" ToRole="AspNetUsers" />
           <NavigationProperty Name="Shares" Relationship="Self.FK_ShareDocument" FromRole="Documents" ToRole="Shares" />
           <NavigationProperty Name="AspNetUsers" Relationship="Self.DocumentUser" FromRole="Documents" ToRole="AspNetUsers" />
+          <Property Name="dirId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Directory" Relationship="IntelliDocsModel.FK_Documents_Directories" FromRole="Document" ToRole="Directory" />
         </EntityType>
         <EntityType Name="Library">
           <Key>
@@ -545,18 +544,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Directories_Hierarchy">
-          <End Role="Directories" Type="Self.Directory" Multiplicity="1" />
-          <End Role="Directories1" Type="Self.Directory" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Directories">
-              <PropertyRef Name="dirId" />
-            </Principal>
-            <Dependent Role="Directories1">
-              <PropertyRef Name="dirParentId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_DirectoryLibrary">
           <End Role="Libraries" Type="Self.Library" Multiplicity="1" />
           <End Role="Directories" Type="Self.Directory" Multiplicity="*" />
@@ -621,10 +608,6 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Libraries" EntitySet="Libraries" />
           </AssociationSet>
-          <AssociationSet Name="FK_Directories_Hierarchy" Association="Self.FK_Directories_Hierarchy">
-            <End Role="Directories" EntitySet="Directories" />
-            <End Role="Directories1" EntitySet="Directories" />
-          </AssociationSet>
           <AssociationSet Name="FK_DirectoryLibrary" Association="Self.FK_DirectoryLibrary">
             <End Role="Libraries" EntitySet="Libraries" />
             <End Role="Directories" EntitySet="Directories" />
@@ -641,7 +624,23 @@
             <End Role="Shares" EntitySet="Shares" />
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
           </AssociationSet>
+          <AssociationSet Name="FK_Documents_Directories" Association="IntelliDocsModel.FK_Documents_Directories">
+            <End Role="Directory" EntitySet="Directories" />
+            <End Role="Document" EntitySet="Documents" />
+          </AssociationSet>
         </EntityContainer>
+        <Association Name="FK_Documents_Directories">
+          <End Type="IntelliDocsModel.Directory" Role="Directory" Multiplicity="1" />
+          <End Type="IntelliDocsModel.Document" Role="Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Directory">
+              <PropertyRef Name="dirId" />
+            </Principal>
+            <Dependent Role="Document">
+              <PropertyRef Name="dirId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -727,9 +726,9 @@
           <EntitySetMapping Name="Documents">
             <EntityTypeMapping TypeName="IntelliDocsModel.Document">
               <MappingFragment StoreEntitySet="Documents">
+                <ScalarProperty Name="dirId" ColumnName="dirId" />
                 <ScalarProperty Name="docId" ColumnName="docId" />
                 <ScalarProperty Name="docName" ColumnName="docName" />
-                <ScalarProperty Name="Directory_nodeId" ColumnName="Directory_nodeId" />
                 <ScalarProperty Name="docCreatedDate" ColumnName="docCreatedDate" />
                 <ScalarProperty Name="User_userId" ColumnName="User_userId" />
               </MappingFragment>

@@ -23,14 +23,15 @@ namespace Ictect.IntelliDocs.Web.Models
     
         public int docId { get; set; }
         public string docName { get; set; }
-        public int Directory_nodeId { get; set; }
         public System.DateTime docCreatedDate { get; set; }
         public string User_userId { get; set; }
+        public int dirId { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Share> Shares { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetUser> AspNetUsers { get; set; }
+        public virtual Directory Directory { get; set; }
     }
 }
