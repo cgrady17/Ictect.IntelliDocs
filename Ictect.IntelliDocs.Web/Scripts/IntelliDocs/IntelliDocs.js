@@ -18,6 +18,37 @@
         });
     };
 
+    var uploadDocument = function () {
+        alert("Coming Soon");
+    };
+
+    var newFolder = function (dirName, input) {
+        IntelliDocs.library.showLoader("Creating your new Directory...", "We appreciate your patience while we create your new Directory, <strong>" + dirName + "</strong>.", false);
+        $.post(IntelliDocs.baseUrl + "Library/CreateFolder", { parentDirId: IntelliDocs.library.parentDirId, dirName: dirName, libraryId: IntelliDocs.library.libraryId }, function (result) {
+            IntelliDocs.library.hideLoader();
+            if (result.status === "success") {
+                if (input !== undefined) {
+                    input.attr("readonly", true);
+                    input.parent().find(".glyphicon-plus").remove();
+                }
+                alert("Success! New dir ID: " + result.message);
+            } else {
+                alert("Failure! Message: " + result.message);
+            }
+        });
+    };
+
+    var showLibraryLoader = function (header, body, showClose) {
+        var dialogId = Math.floor(Math.random() * 300);
+        $("#content-container").append("<div id='dialog-" + dialogId + "' class='dialog-overlay'><div class='dialog-container'><div class='dialog-body'><h2>" + header + "</h2><p>" + body + "</p>" + (showClose === true ? "<button type='button' class='btn btn-primary' onclick='IntelliDocs.library.hideLoader(" + dialogId + ")'>Close</button>" : "") + "</div></div></div>");
+        $("#dialog-" + dialogId).show(400);
+        return dialogId;
+    };
+
+    var hideLibraryLoader = function (dialogId) {
+        $("#dialog-" + dialogId).hide(400).remove();
+    };
+
     // Instantiate the IntelliDocs Object
     var initIntelliDocs = function () {
         var intelliDocsObj = {
@@ -72,37 +103,6 @@
     };
     // Call initIntelliDocs to instantiate and add IntelliDocs to window
     initIntelliDocs();
-
-    var uploadDocument = function () {
-        alert("Coming Soon");
-    };
-
-    var newFolder = function (dirName, input) {
-        IntelliDocs.library.showLoader("Creating your new Directory...", "We appreciate your patience while we create your new Directory, <strong>" + dirName + "</strong>.", false);
-        $.post(IntelliDocs.baseUrl + "Library/CreateFolder", { parentDirId: IntelliDocs.library.parentDirId, dirName: dirName, libraryId: IntelliDocs.library.libraryId }, function (result) {
-            IntelliDocs.library.hideLoader();
-            if (result.status === "success") {
-                if (input !== undefined) {
-                    input.attr("readonly", true);
-                    input.parent().find(".glyphicon-plus").remove();
-                }
-                alert("Success! New dir ID: " + result.message);
-            } else {
-                alert("Failure! Message: " + result.message);
-            }
-        });
-    };
-
-    var showLibraryLoader = function (header, body, showClose) {
-        var dialogId = Math.floor(Math.random() * 300);
-        $("#content-container").append("<div id='dialog-" + dialogId + "' class='dialog-overlay'><div class='dialog-container'><div class='dialog-body'><h2>" + header + "</h2><p>" + body + "</p>" + (showClose === true ? "<button type='button' class='btn btn-primary' onclick='IntelliDocs.library.hideLoader(" + dialogId + ")'>Close</button>" : "") + "</div></div></div>");
-        $("#dialog-" + dialogId).show(400);
-        return dialogId;
-    };
-
-    var hideLibraryLoader = function (dialogId) {
-        $("#dialog-" + dialogId).hide(400).remove();
-    };
 })(window);
 
 /* jQuery-dependent */
@@ -132,7 +132,7 @@ $(function () {
         return IntelliDocs.newFolder($(this).val());
     });
     $("input#new-folder-name").keyup(function (e) {
-        if (e.keyCode == 13) {
+        if (e.keyCode === 13) {
             $(this).trigger("enterKey");
         }
     });
