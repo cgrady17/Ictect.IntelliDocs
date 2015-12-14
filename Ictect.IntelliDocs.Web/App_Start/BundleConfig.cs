@@ -16,6 +16,7 @@ namespace Ictect.IntelliDocs.Web
             ScriptBundle jsBundle = new ScriptBundle("~/Scripts/IntelliDocsJS");
             jsBundle.Include(
                 "~/Scripts/jquery-{version}.js",
+                "~/Scripts/jquery.form.js",
                 "~/Scripts/bootstrap.js",
                 "~/Scripts/IntelliDocs/IntelliDocs.js"
                 );

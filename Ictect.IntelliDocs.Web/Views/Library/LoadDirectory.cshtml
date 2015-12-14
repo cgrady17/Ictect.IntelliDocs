@@ -10,11 +10,11 @@
     </a>
     @foreach (Ictect.IntelliDocs.Web.Models.Directory dirLevelOne in Model.ChildDirectories)
     {
-        <a href="#" class="library-grid-item library-folder" data-dirid="@dirLevelOne.dirId">@dirLevelOne.dirName</a>
+        <a href="#" class="library-grid-item library-folder" data-action="load-directory" data-dirid="@dirLevelOne.dirId">@dirLevelOne.dirName</a>
     }
     @foreach (Document docLevelOne in Model.Documents)
     {
-        <a href="#" class="library-grid-item library-doc" data-docid="@docLevelOne.docId">@docLevelOne.docName</a>
+        <a href="#" class="library-grid-item library-doc" data-action="load-file" data-docid="@docLevelOne.docId">@docLevelOne.docName</a>
     }
 </div>
 

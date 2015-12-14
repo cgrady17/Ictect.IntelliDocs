@@ -1,2 +1,34 @@
-﻿<h2>Upload a new File</h2>
-<p>Use the form below to upload a new File to this Directory.</p>
+﻿@model Ictect.IntelliDocs.Web.Models.Directory
+<script>
+    $("form").submit(function (e) {
+        $(this).ajaxSubmit({
+            dataType: 'json',
+            success: function(data) {
+                $("#form-result").html(data.message);
+                data.status === "success" ? $("#form-result").addClass("success") : $("#form-result").addClass("error");
+            }
+        });
+
+        return false;
+    });
+</script>
+<h2>Upload a new File</h2>
+<p>Use the form below to upload a new File to <strong>@Model.dirName</strong>.
+</p>
+<div id="form-result" class="content-container"></div>
+@using (Html.BeginForm(null, null, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <fieldset>
+        <label>Select the file to Upload...</label>
+        <input type="file" name="file" id="file" />
+    </fieldset>
+    
+    <fieldset>
+        <label>File Name</label>
+        <input type="text" name="fileName" />
+    </fieldset>
+
+    <input type="hidden" name="dirId" value="@Model.dirId"/>
+    <button type="submit" class="btn btn-success">Upload</button>
+}

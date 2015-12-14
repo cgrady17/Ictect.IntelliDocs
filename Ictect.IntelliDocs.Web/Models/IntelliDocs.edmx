@@ -87,6 +87,8 @@
           <Property Name="dirId" Type="int" Nullable="false" />
           <Property Name="docCreatedDate" Type="datetime" Nullable="false" />
           <Property Name="User_userId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="docExtension" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="docContentType" Type="nvarchar" MaxLength="150" Nullable="false" />
         </EntityType>
         <EntityType Name="DocumentUser">
           <Key>
@@ -446,6 +448,8 @@
           <NavigationProperty Name="AspNetUsers" Relationship="Self.DocumentUser" FromRole="Documents" ToRole="AspNetUsers" />
           <Property Name="dirId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Directory" Relationship="IntelliDocsModel.FK_Documents_Directories" FromRole="Document" ToRole="Directory" />
+          <Property Name="docExtension" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="docContentType" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Library">
           <Key>
@@ -726,6 +730,8 @@
           <EntitySetMapping Name="Documents">
             <EntityTypeMapping TypeName="IntelliDocsModel.Document">
               <MappingFragment StoreEntitySet="Documents">
+                <ScalarProperty Name="docContentType" ColumnName="docContentType" />
+                <ScalarProperty Name="docExtension" ColumnName="docExtension" />
                 <ScalarProperty Name="dirId" ColumnName="dirId" />
                 <ScalarProperty Name="docId" ColumnName="docId" />
                 <ScalarProperty Name="docName" ColumnName="docName" />

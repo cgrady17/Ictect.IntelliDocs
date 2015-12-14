@@ -12,8 +12,7 @@ namespace Ictect.IntelliDocs.Web.Models
             get
             {
                 string basePath = ConfigurationManager.AppSettings["LibraryBasePath"];
-                List<string> pathParts = new List<string>();
-                pathParts.Add(dirId.ToString());
+                List<string> pathParts = new List<string> {dirId.ToString()};
                 if (ParentDirectory != null)
                 {
                     pathParts.Add(ParentDirectory.dirId.ToString());
@@ -32,7 +31,7 @@ namespace Ictect.IntelliDocs.Web.Models
 
                 path += string.Join("/", pathParts);
 
-                return path;
+                return path + "/";
             }
         }
 
@@ -42,8 +41,7 @@ namespace Ictect.IntelliDocs.Web.Models
             {
                 string basePath = ConfigurationManager.AppSettings["LibraryBasePath"];
 
-                List<string> pathParts = new List<string>();
-                pathParts.Add(dirName);
+                List<string> pathParts = new List<string> {dirName};
                 if (ParentDirectory != null)
                 {
                     pathParts.Add(ParentDirectory.dirName);
@@ -70,8 +68,10 @@ namespace Ictect.IntelliDocs.Web.Models
         {
             get
             {
-                List<string> pathParts = new List<string>();
-                pathParts.Add("<a href='#' data-action='loadDirectory' data-dirid='" + dirId + "'>" + dirName + "</a>");
+                List<string> pathParts = new List<string>
+                {
+                    "<a href='#' data-action='loadDirectory' data-dirid='" + dirId + "'>" + dirName + "</a>"
+                };
                 if (ParentDirectory != null)
                 {
                     pathParts.Add("<a href='#' data-action='loadDirectory' data-dirid='" + ParentDirectory.dirId + "'>" + ParentDirectory.dirName + "</a>");
@@ -104,8 +104,7 @@ namespace Ictect.IntelliDocs.Web.Models
             {
                 using (IntelliDocsEntities db = new IntelliDocsEntities())
                 {
-                    if (dirId == 0) return new List<Directory>();
-                    return db.Directories.Where(x => x.dirParentId != null && x.dirParentId == dirId).ToList();
+                    return dirId == 0 ? new List<Directory>() : db.Directories.Where(x => x.dirParentId != null && x.dirParentId == dirId).ToList();
                 }
             }
         }
@@ -124,10 +123,7 @@ namespace Ictect.IntelliDocs.Web.Models
                         return db.Directories.Find(dirParentId.Value);
                     }
                 }
-                else
-                {
-                    return null;
-                }
+                return null;
             }
         }
     }

@@ -19,7 +19,9 @@
     };
 
     var uploadDocument = function () {
-        alert("Coming Soon");
+        $.get(IntelliDocs.baseUrl + "File/Upload/" + IntelliDocs.library.workingDirId, function(data) {
+            $("#ajax-modal .modal-content").html(data);
+        });
     };
 
     var newFolder = function (dirName, input) {
@@ -96,6 +98,9 @@
             },
             viewLibrary: function () {
                 window.location = this.baseUrl;
+            },
+            loadFile: function(docId) {
+                window.open(IntelliDocs.baseUrl + "File/Get/" + docId, "_blank");
             }
         };
 
@@ -139,5 +144,9 @@ $(function () {
 
     $(".library-folder[data-dirid], [data-action='loadDirectory']").click(function (e) {
         return IntelliDocs.loadLibrary($(this).data("dirid"));
+    });
+
+    $("[data-action='load-file'][data-docid]").click(function(e) {
+        return IntelliDocs.loadFile($(this).data("docid"));
     });
 });

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
+using System.Web;
 
 namespace Ictect.IntelliDocs.Web.Models
 {
@@ -11,15 +13,15 @@ namespace Ictect.IntelliDocs.Web.Models
         {
             string basePath = ConfigurationManager.AppSettings["LibraryBasePath"];
 
-            string id = docId.ToString();
+            basePath = Path.Combine(HttpContext.Current.Server.MapPath("~"), basePath);
+
+            string id = docId + docExtension;
 
             Directory parentDir = db.Directories.Find(dirId);
 
             Directory tempDir = parentDir;
 
-            List<string> pathParts = new List<string>();
-            pathParts.Add(id);
-            pathParts.Add(parentDir.dirId.ToString());
+            List<string> pathParts = new List<string> {id, parentDir.dirId.ToString()};
 
             while (tempDir.dirParentId > 0 && tempDir.ParentDirectory != null)
             {
@@ -35,5 +37,7 @@ namespace Ictect.IntelliDocs.Web.Models
 
             return path; // Test
         }
+
+        public string FullFilename => docName + docExtension;
     }
 }
