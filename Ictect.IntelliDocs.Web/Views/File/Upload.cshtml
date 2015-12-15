@@ -1,34 +1,76 @@
 ﻿@model Ictect.IntelliDocs.Web.Models.Directory
 <script>
-    $("form").submit(function (e) {
-        $(this).ajaxSubmit({
-            dataType: 'json',
-            success: function(data) {
-                $("#form-result").html(data.message);
-                data.status === "success" ? $("#form-result").addClass("success") : $("#form-result").addClass("error");
-            }
+    $(function () {
+        $("[data-action='upload-submit']").click(function() {
+            $("form").submit();
         });
 
-        return false;
-    });
-</script>
-<h2>Upload a new File</h2>
-<p>Use the form below to upload a new File to <strong>@Model.dirName</strong>.
-</p>
-<div id="form-result" class="content-container"></div>
-@using (Html.BeginForm(null, null, FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
-    <fieldset>
-        <label>Select the file to Upload...</label>
-        <input type="file" name="file" id="file" />
-    </fieldset>
-    
-    <fieldset>
-        <label>File Name</label>
-        <input type="text" name="fileName" />
-    </fieldset>
+        $("[data-action='validate-doc']").click(function() {
+            $("form").ajaxSubmit({
+                dataType: 'json',
+                url: '@Url.Action("ValidateDocument")',
+                success: function (data) {
+                    $("#form-result").html(data.message);
+                    if (data.status === "success") {
+                        $("#form-result").addClass("alert-info");
+                    } else {
+                        $("#form-result").addClass("alert-danger");
+                    }
+                }
+            });
+        });
 
-    <input type="hidden" name="dirId" value="@Model.dirId"/>
-    <button type="submit" class="btn btn-success">Upload</button>
-}
+        $("form").submit(function (e) {
+            $(this).hide(400);
+            $(this).ajaxSubmit({
+                dataType: 'json',
+                success: function (data) {
+                    $("#form-result").html(data.message);
+                    if (data.status === "success") {
+                        IntelliDocs.reloadLibrary();
+                        $("#form-result").addClass("alert-success");
+                        $("[data-action='upload-submit']").hide(400);
+                        $(".modal-footer [data-dismiss]").html("Close");
+                    } else {
+                        $("#form-result").addClass("alert-danger");
+                        $("form").show(400);
+                    }
+                }
+            });
+
+            return false;
+        });
+    });    
+</script>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title">Upload a new File</h4>
+</div>
+<div class="modal-body">
+    <p>
+        Use the form below to upload a new File to <strong>@Model.dirName</strong>.
+    </p>
+    <div id="form-result" class="content-container"></div>
+    @using (Html.BeginForm(null, null, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label class="control-label">Select the file to Upload...</label>
+                <input class="form-control" type="file" name="file" id="file"/>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label class="control-label">File Name</label>
+                <input class="form-control" type="text" name="fileName"/>
+            </div>
+        </div>
+
+        <input type="hidden" name="dirId" value="@Model.dirId"/>
+    }
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+    <button type="button" class="btn btn-primary" data-action="validate-doc"><i class="fa fa-check-square-o"></i> Validate (<i class="fa fa-file-word-o"></i> Only)</button>
+    <button type="button" class="btn btn-success" data-action="upload-submit"><i class="fa fa-cloud-upload"></i> Upload</button>
+</div>

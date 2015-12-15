@@ -4,22 +4,54 @@
 <h2 class="page-title">@Model.PathLinks</h2>
 <div id="library-grid">
     <a href="#" class="library-grid-item library-folder-new" data-action="new-folder">
-        <span class="glyphicon glyphicon-folder-close"></span>
-        <span class="glyphicon glyphicon-plus"></span>
+        <i class="fa fa-folder-o"></i>
+        <i class="fa fa-plus"></i>
         <input type="text" placeholder="Create New Folder" id="new-folder-name" />
     </a>
-    @foreach (Ictect.IntelliDocs.Web.Models.Directory dirLevelOne in Model.ChildDirectories)
+    @foreach (Ictect.IntelliDocs.Web.Models.Directory directory in Model.ChildDirectories)
     {
-        <a href="#" class="library-grid-item library-folder" data-action="load-directory" data-dirid="@dirLevelOne.dirId">@dirLevelOne.dirName</a>
+        <a href="#" class="library-grid-item library-folder" data-action="load-directory" data-dirid="@directory.dirId">
+            <i class="fa fa-folder-o"></i>
+            @directory.dirName
+        </a>
     }
-    @foreach (Document docLevelOne in Model.Documents)
+    @foreach (Document doc in Model.Documents)
     {
-        <a href="#" class="library-grid-item library-doc" data-action="load-file" data-docid="@docLevelOne.docId">@docLevelOne.docName</a>
+        <a href="#" data-toggle="modal" data-target="#ajax-modal" class="library-grid-item library-doc" data-url="@Url.Action("FileDetails", "File", new { id = doc.docId })" data-docid="@doc.docId">
+            @switch (doc.docExtension)
+            {
+                case ".docx":
+                case ".doc":
+                    <i class="fa fa-file-word-o"></i>
+                    break;
+                case ".pdf":
+                    <i class="fa fa-file-pdf-o"></i>
+                    break;
+                case ".pptx":
+                case ".ppt":
+                    <i class="fa fa-file-powerpoint-o"></i>
+                    break;
+                case ".xls":
+                case ".xlsx":
+                    <i class="fa fa-file-excel-o"></i>
+                    break;
+                case ".png":
+                case ".jpg":
+                case ".gif":
+                case ".bmp":
+                    <i class="fa fa-file-image-o"></i>
+                    break;
+                default:
+                    <i class="fa fa-file-o"></i>
+                    break;
+            }
+            @doc.docName
+        </a>
     }
 </div>
 
 <script>
     $(function () {
-        IntelliDocs.setLibrary(@Model.dirId, @Html.Raw(Model.dirParentId.HasValue ? Model.dirParentId.Value : 0), @Model.Library_libId);
+        IntelliDocs.setLibrary(@Model.dirId, @Html.Raw(Model.dirParentId ?? 0), @Model.Library_libId, "@Model.dirName", "@Model.Path");
     });
 </script>

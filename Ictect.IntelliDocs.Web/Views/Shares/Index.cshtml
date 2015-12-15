@@ -1,8 +1,59 @@
 ﻿@using Ictect.IntelliDocs.Web.Models
 @{ 
     ViewBag.Title = "Your Shares";
-    IReadOnlyList<Ictect.IntelliDocs.Web.Models.Directory> Directories = ViewBag.Directories as List<Ictect.IntelliDocs.Web.Models.Directory>;
-    IReadOnlyList<Document> Documents = ViewBag.Documents as List<Document>;
+    IReadOnlyList<Ictect.IntelliDocs.Web.Models.Directory> directories = ViewBag.Directories as List<Ictect.IntelliDocs.Web.Models.Directory>;
+    IReadOnlyList<Document> documents = ViewBag.Documents as List<Document>;
 }
 
 <h2 class="page-title">Here's what others have Shared with You</h2>
+@if (directories.Count == 0 && documents.Count == 0)
+{
+    <div class="alert alert-warning">
+        <strong>Nothing!</strong> Doesn't look like anyone has shared anything with you.
+    </div>
+}
+else
+{
+    <div id="library-grid">
+        @foreach (Ictect.IntelliDocs.Web.Models.Directory directory in directories)
+        {
+            <a href="#" class="library-grid-item library-folder" data-action="load-directory" data-dirid="@directory.dirId">
+                <i class="fa fa-folder-o"></i>
+                @directory.dirName
+            </a>
+        }
+        @foreach (Document doc in documents)
+        {
+            <a href="#" data-toggle="modal" data-target="#ajax-modal" class="library-grid-item library-doc" data-url="@Url.Action("FileDetails", "File", new {id = doc.docId})" data-docid="@doc.docId">
+                @switch (doc.docExtension)
+                {
+                    case ".docx":
+                    case ".doc":
+                        <i class="fa fa-file-word-o"></i>
+                        break;
+                    case ".pdf":
+                        <i class="fa fa-file-pdf-o"></i>
+                        break;
+                    case ".pptx":
+                    case ".ppt":
+                        <i class="fa fa-file-powerpoint-o"></i>
+                        break;
+                    case ".xls":
+                    case ".xlsx":
+                        <i class="fa fa-file-excel-o"></i>
+                        break;
+                    case ".png":
+                    case ".jpg":
+                    case ".gif":
+                    case ".bmp":
+                        <i class="fa fa-file-image-o"></i>
+                        break;
+                    default:
+                        <i class="fa fa-file-o"></i>
+                        break;
+                }
+                @doc.docName
+            </a>
+        }
+    </div>
+}

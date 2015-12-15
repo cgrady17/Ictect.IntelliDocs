@@ -106,8 +106,15 @@ h1, h2, h3, h4, h5, h6 {
             margin-left: 15px;
         }
 
-        #header-container > header div#header-actions a > span {
+        #header-container > header div#header-actions a > span, #header-container > header div#header-actions a > i.fa {
             margin-right: 5px;
+        }
+
+        #header-container > header div#header-actions > div#directory-actions {
+            border-left: 2px solid #FFF;
+            display: inline-block;
+            padding-left: 10px;
+            margin-left: 5px;
         }
 
     /* Header Home Link */
@@ -220,6 +227,33 @@ h1, h2, h3, h4, h5, h6 {
         margin-top: 0.5em;
     }
 
+.content-container {
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.error {
+    background: #D9534F;
+}
+
+.success {
+    background: #5CB85C;
+}
+
+.error, .success {
+    color: #FFF;
+}
+
+/* Error Message (floating) */
+.error-message {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    margin-left: -150px;
+    width: 300px;
+    z-index: 9999;
+}
+
 /* Doc Library Flexbox */
 #library-grid {
     display: flex;
@@ -246,53 +280,40 @@ h1, h2, h3, h4, h5, h6 {
             text-decoration: none;
         }
 
-        #library-grid .library-grid-item.library-folder:before {
-            content: "\e117";
-            font-family: "Glyphicons Halflings";
-            line-height: 1;
-            margin: 10px;
-            display: block;
+        #library-grid .library-grid-item i.fa {
             font-size: 4rem;
-        }
-
-        #library-grid .library-grid-item.library-doc:before {
-            content: "\e022";
-            font-family: "Glyphicons Halflings";
-            line-height: 1;
-            margin: 10px;
             display: block;
-            font-size: 4rem;
+            margin: 10px;
         }
 
         #library-grid .library-grid-item.library-folder-new {
             position: relative;
         }
 
-        #library-grid .library-grid-item.library-folder-new .glyphicon {
-            margin: 10px;
-            display: block;
-            font-size: 4rem;
-        }
+            #library-grid .library-grid-item.library-folder-new .fa {
+                margin: 10px;
+                display: block;
+                font-size: 4rem;
+            }
 
-        #library-grid .library-grid-item.library-folder-new .glyphicon-plus {
-            color: #FFF;
-            font-size: 2rem;
-            position: absolute;
-            left: 0;
-            right: 0;
-            margin-left: auto;
-            margin-right: auto;
-            top: 25px;
-        }
+            #library-grid .library-grid-item.library-folder-new .fa-plus {
+                font-size: 2rem;
+                position: absolute;
+                left: 0;
+                right: 0;
+                margin-left: auto;
+                margin-right: auto;
+                top: 20px;
+            }
 
         #library-grid .library-grid-item input {
             border: none;
             font-size: 1.5rem;
         }
 
-        #library-grid .library-grid-item input[placeholder] {
-            text-align: center;
-        }
+            #library-grid .library-grid-item input[placeholder] {
+                text-align: center;
+            }
 
 /* Splash Page */
 #splash-container {

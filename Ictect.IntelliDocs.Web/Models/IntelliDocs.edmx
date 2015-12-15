@@ -247,18 +247,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ShareDocument">
-          <End Role="Documents" Type="Self.Documents" Multiplicity="1" />
-          <End Role="Shares" Type="Self.Shares" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Documents">
-              <PropertyRef Name="docId" />
-            </Principal>
-            <Dependent Role="Shares">
-              <PropertyRef Name="Document_docId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ShareUser_Share">
           <End Role="Shares" Type="Self.Shares" Multiplicity="1" />
           <End Role="ShareUser" Type="Self.ShareUser" Multiplicity="*" />
@@ -332,10 +320,6 @@
           <AssociationSet Name="FK_LibraryUser" Association="Self.FK_LibraryUser">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Libraries" EntitySet="Libraries" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ShareDocument" Association="Self.FK_ShareDocument">
-            <End Role="Documents" EntitySet="Documents" />
-            <End Role="Shares" EntitySet="Shares" />
           </AssociationSet>
           <AssociationSet Name="FK_ShareUser_Share" Association="Self.FK_ShareUser_Share">
             <End Role="Shares" EntitySet="Shares" />
@@ -444,7 +428,6 @@
           <Property Name="docCreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="User_userId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="AspNetUser" Relationship="Self.FK_Document_OriginalUser" FromRole="Documents" ToRole="AspNetUsers" />
-          <NavigationProperty Name="Shares" Relationship="Self.FK_ShareDocument" FromRole="Documents" ToRole="Shares" />
           <NavigationProperty Name="AspNetUsers" Relationship="Self.DocumentUser" FromRole="Documents" ToRole="AspNetUsers" />
           <Property Name="dirId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Directory" Relationship="IntelliDocsModel.FK_Documents_Directories" FromRole="Document" ToRole="Directory" />
@@ -469,7 +452,6 @@
           <Property Name="shrCreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Directory_nodeId" Type="Int32" Nullable="false" />
           <Property Name="Document_docId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Document" Relationship="Self.FK_ShareDocument" FromRole="Shares" ToRole="Documents" />
           <NavigationProperty Name="AspNetUsers" Relationship="Self.ShareUser" FromRole="Shares" ToRole="AspNetUsers" />
         </EntityType>
         <EntityType Name="sysdiagram">
@@ -560,18 +542,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ShareDocument">
-          <End Role="Documents" Type="Self.Document" Multiplicity="1" />
-          <End Role="Shares" Type="Self.Share" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Documents">
-              <PropertyRef Name="docId" />
-            </Principal>
-            <Dependent Role="Shares">
-              <PropertyRef Name="Document_docId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="DocumentUser">
           <End Role="Documents" Type="Self.Document" Multiplicity="*" />
           <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="*" />
@@ -615,10 +585,6 @@
           <AssociationSet Name="FK_DirectoryLibrary" Association="Self.FK_DirectoryLibrary">
             <End Role="Libraries" EntitySet="Libraries" />
             <End Role="Directories" EntitySet="Directories" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ShareDocument" Association="Self.FK_ShareDocument">
-            <End Role="Documents" EntitySet="Documents" />
-            <End Role="Shares" EntitySet="Shares" />
           </AssociationSet>
           <AssociationSet Name="DocumentUser" Association="Self.DocumentUser">
             <End Role="Documents" EntitySet="Documents" />

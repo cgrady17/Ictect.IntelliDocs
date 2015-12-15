@@ -1,0 +1,86 @@
+﻿@model Ictect.IntelliDocs.Web.Models.Directory
+@using Ictect.IntelliDocs.Web.Models
+@{
+    ViewBag.Title = "Share " + Model.dirName;
+    IReadOnlyList<Share> DirShares = ViewBag.DirShares as List<Share>;
+}
+<script>
+    $(function() {
+        var xhr;
+        $("input#username").autoComplete({
+            source: function(term, response) {
+                try {
+                    xhr.abort();
+                } catch (e) {
+                }
+
+                xhr = $.getJSON(IntelliDocs.baseUrl + "Shares/SearchUsers", { q: term }, function(data) {
+                    response(data);
+                });
+            }
+        });
+
+        $("button[data-action='share-dir']").click(function() {
+            $.post("@Url.Action("ShareDirectory")", { dirId: @Model.dirId, userName: $("#username").val() }, function(data) {
+                $("#share-results-content").html(data.message);
+                if (data.status === "success") {
+                    $("#share-results").addClass("alert-success").show(400);
+                } else {
+                    $("#share-results").addClass("alert-danger").show(400);
+                }
+            });
+        });
+
+        $("button[data-action='un-share-dir']").click(function() {
+            var parent = $(this).parent().parent();
+            $.post("@Url.Action("UnShareDirectory")", { dirId: @Model.dirId, userName: $(this).data("username") }, function(data) {
+                if (data.status === "success") {
+                    parent.hide(400);
+                } else {
+                    IntelliDocs.showAlert(data.message, "alert-danger");
+                }
+            });
+        });
+    });
+</script>
+<h2 class="page-title">@ViewBag.Title</h2>
+<div class="row">
+    <div class="form-group col-md-6">
+        <label class="control-label" for="username">Search for a User</label>
+        <input type="text" placeholder="Username" name="username" id="username" class="form-control" />
+    </div>
+    <div class="col-md-4">
+        <button type="button" class="btn btn-lg btn-success" data-action="share-dir"><i class="fa fa-share-alt"></i> Share</button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="alert" id="share-results" style="display: none;">
+            <button type="button" class="close" data-dismiss="alert">&times</button>
+            <div id="share-results-content"></div>
+        </div>
+    </div>
+</div>
+<h3>@Model.dirName has been shared with...</h3>
+@if (DirShares.Count == 0)
+{
+    <div class="alert alert-warning">
+        <strong>No one!</strong> Start sharing @Model.dirName by using the above form.
+    </div>
+}
+else
+{
+    foreach (AspNetUser user in DirShares.SelectMany(shr => shr.AspNetUsers).Distinct())
+    {
+        <div class="content-container alert-info" style="display: inline-block; width: auto;">
+            <div class="col-md-8">
+                <h4><strong>@user.UserName</strong></h4>
+                <span>Email </span><strong>@user.Email</strong><br />
+                <span>Title </span><strong>@user.Title</strong><br /><br />
+            </div>
+            <div class="col-md-4">
+                <button type="button" class="btn btn-danger" data-action="un-share-dir" data-username="@user.UserName"><i class="fa fa-times"></i> Un-Share</button>
+            </div>
+        </div>
+    }
+}

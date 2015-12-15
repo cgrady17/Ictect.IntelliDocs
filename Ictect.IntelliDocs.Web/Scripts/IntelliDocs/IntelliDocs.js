@@ -1,7 +1,7 @@
 ﻿/*! IntelliDocs JavaScript Framework
  *  Globally-accessible object for IntelliDocs-related
  *  functions and properties.
- * 
+ *
  *  Requires: jQuery
  */
 "use strict";
@@ -19,23 +19,33 @@
     };
 
     var uploadDocument = function () {
-        $.get(IntelliDocs.baseUrl + "File/Upload/" + IntelliDocs.library.workingDirId, function(data) {
+        $.get(IntelliDocs.baseUrl + "File/Upload/" + IntelliDocs.library.workingDirId, function (data) {
             $("#ajax-modal .modal-content").html(data);
         });
     };
 
-    var newFolder = function (dirName, input) {
-        IntelliDocs.library.showLoader("Creating your new Directory...", "We appreciate your patience while we create your new Directory, <strong>" + dirName + "</strong>.", false);
-        $.post(IntelliDocs.baseUrl + "Library/CreateFolder", { parentDirId: IntelliDocs.library.parentDirId, dirName: dirName, libraryId: IntelliDocs.library.libraryId }, function (result) {
-            IntelliDocs.library.hideLoader();
-            if (result.status === "success") {
-                if (input !== undefined) {
-                    input.attr("readonly", true);
-                    input.parent().find(".glyphicon-plus").remove();
-                }
-                alert("Success! New dir ID: " + result.message);
+    var deleteDocument = function(docId) {
+        $.get(IntelliDocs.baseUrl = "File/Delete/" + docId, function (data) {
+            $("#doc-actions-result").html(data.message);
+            if (data.status === "success") {
+                IntelliDocs.reloadLibrary();
+                $("#doc-actions").hide(400);
+                $("#doc-actions-result").addClass("success");
             } else {
-                alert("Failure! Message: " + result.message);
+                $("#doc-actions-result").addClass("error");
+            }
+        });
+    }
+
+    var newFolder = function (dirName, input) {
+        var dialogId = IntelliDocs.library.showLoader("Creating your new Directory...", "We appreciate your patience while we create your new Directory, <strong>" + dirName + "</strong>.", false);
+        $.post(IntelliDocs.baseUrl + "Library/CreateFolder", { parentDirId: IntelliDocs.library.parentDirId, dirName: dirName, libraryId: IntelliDocs.library.libraryId }, function (result) {
+            IntelliDocs.library.hideLoader(dialogId);
+            if (result.status === "success") {
+                IntelliDocs.reloadLibrary();
+                IntelliDocs.showAlert(result.message, "alert-success");
+            } else {
+                IntelliDocs.showAlert(result.message, "alert-danger");
             }
         });
     };
@@ -72,8 +82,20 @@
                     $(".library-folder[data-dirid], [data-action='loadDirectory']").click(function (e) {
                         return IntelliDocs.loadLibrary($(this).data("dirid"));
                     });
+                    $("[data-toggle='modal'][data-url]").click(function (e) {
+                        var target = $(this).data("target");
+                        $.get($(this).data("url"), function (data) {
+                            $(target).find(".modal-content").html(data);
+                        });
+                    });
                 });
                 this.library.hideLoader(dialogId);
+                //$("[data-action='load-file'][data-docid]").click(function (e) {
+                //    return IntelliDocs.loadFile($(this).data("docid"));
+                //});
+            },
+            reloadLibrary: function () {
+                return IntelliDocs.loadLibrary(IntelliDocs.library.workingDirId);
             },
             library: {
                 workingDirId: 0,
@@ -84,23 +106,76 @@
                 },
                 hideLoader: function (dialogId) {
                     return hideLibraryLoader(dialogId);
-                }
+                },
+                dirName: "",
+                fullPath: ""
             },
-            setLibrary: function (workingDirId, parentDirId, libraryId) {
+            setLibrary: function (workingDirId, parentDirId, libraryId, dirName, fullPath) {
                 this.library.workingDirId = workingDirId;
                 this.library.parentDirId = parentDirId;
                 this.library.libraryId = libraryId;
+                this.library.dirName = dirName;
+                this.library.fullPath = fullPath;
+                //window.location.href = fullPath;
             },
             viewShares: function () {
                 $.get(this.baseUrl + "Shares", function (data) {
                     $("#content-container").html(data);
                 });
             },
+            viewDocShares: function(docId) {
+                $.get(this.baseUrl + "Shares/ShareDocument/" + docId, function(data) {
+                    $("#content-container").html(data);
+                });
+            },
             viewLibrary: function () {
                 window.location = this.baseUrl;
             },
-            loadFile: function(docId) {
+            loadFile: function (docId) {
                 window.open(IntelliDocs.baseUrl + "File/Get/" + docId, "_blank");
+            },
+            showAlert: function(alertText, alertClass) {
+                // set the message to display: none to fade it in later.
+                if (alertClass === undefined) {
+                    alertClass = "alert-danger";
+                }
+                var message = $("<div class=\"alert " + alertClass + " error-message\" style=\"display: none;\">");
+                // a close button
+                var close = $("<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times</button>");
+                message.append(close); // adding the close button to the message
+                message.append(alertText); // adding the error response to the message
+                // add the message element to the body, fadein, wait 3secs, fadeout
+                message.appendTo($("body")).fadeIn(300).delay(3000).fadeOut(500);
+            },
+            deleteFile: function(docId) {
+                return deleteDocument(docId);
+            },
+            viewDirShares: function(dirId) {
+                $.get(this.baseUrl + "Shares/ShareDirectory/" + dirId, function(data) {
+                    $("#content-container").html(data);
+});
+            },
+            confirmDirDelete: function(dirId) {
+                $.get(IntelliDocs.baseUrl + "Library/DeleteDirectoryConfirm/" + dirId, function (data) {
+                    $("#ajax-modal .modal-content").html(data);
+                });
+            },
+            deleteDirectory: function(dirId) {
+                $.get(IntelliDocs.baseUrl + "Library/DeleteDirectory/" + dirId, function(data) {
+                    $("#dir-actions-result").html(data.message);
+                    if (data.status === "success") {
+                        IntelliDocs.reloadLibrary();
+                        $("#dir-actions").hide(400);
+                        $("#dir-actions-result").addClass("success");
+                    } else {
+                        $("#dir-actions-result").addClass("error");
+                    }
+                });
+            },
+            createDirectoryModal: function() {
+                $.get(IntelliDocs.baseUrl + "Library/NewFolder", function(data) {
+                    $("#ajax-modal .modal-content").html(data);
+                });
             }
         };
 
@@ -112,6 +187,22 @@
 
 /* jQuery-dependent */
 $(function () {
+    $("#header-actions [data-action='new-folder']").click(function() {
+        IntelliDocs.createDirectoryModal();
+    });
+
+    $("[data-action='delete-folder']").click(function() {
+        IntelliDocs.confirmDirDelete(IntelliDocs.library.workingDirId);
+    });
+
+    $("[data-action='share-folder']").click(function() {
+        IntelliDocs.viewDirShares(IntelliDocs.library.workingDirId);
+    });
+
+    $("[data-action='view-doc-shares'][data-docid]").click(function() {
+        IntelliDocs.viewDocShares($(this).data("docid"));
+    });
+
     $("[data-action='view-shares'").click(function (e) {
         IntelliDocs.viewShares();
         $(this).parent().parent().find("a").removeClass("active");
@@ -146,7 +237,14 @@ $(function () {
         return IntelliDocs.loadLibrary($(this).data("dirid"));
     });
 
-    $("[data-action='load-file'][data-docid]").click(function(e) {
-        return IntelliDocs.loadFile($(this).data("docid"));
+    //$("[data-action='load-file'][data-docid]").click(function (e) {
+    //    return IntelliDocs.loadFile($(this).data("docid"));
+    //});
+
+    $("[data-toggle='modal'][data-url]").click(function (e) {
+        var target = $(this).data("target");
+        $.get($(this).data("url"), function(data) {         
+            $(target).find(".modal-content").html(data);
+        });
     });
 });

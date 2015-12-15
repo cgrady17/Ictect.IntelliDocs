@@ -9,6 +9,8 @@ namespace Ictect.IntelliDocs.Web
             StyleBundle cssBundle = new StyleBundle("~/Content/IntelliDocsCSS");
             cssBundle.Include(
                 "~/Content/bootstrap.css",
+                "~/Content/font-awesome.css",
+                "~/Content/jquery.auto-complete.css",
                 "~/Content/IntelliDocs.css"
                 );
             bundles.Add(cssBundle);
@@ -17,6 +19,7 @@ namespace Ictect.IntelliDocs.Web
             jsBundle.Include(
                 "~/Scripts/jquery-{version}.js",
                 "~/Scripts/jquery.form.js",
+                "~/Scripts/jquery.auto-complete.js",
                 "~/Scripts/bootstrap.js",
                 "~/Scripts/IntelliDocs/IntelliDocs.js"
                 );

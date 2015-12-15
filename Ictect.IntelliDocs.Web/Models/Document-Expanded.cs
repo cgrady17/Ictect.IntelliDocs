@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
 using System.Web;
 
 namespace Ictect.IntelliDocs.Web.Models
@@ -9,33 +8,36 @@ namespace Ictect.IntelliDocs.Web.Models
     {
         private IntelliDocsEntities db = new IntelliDocsEntities();
 
-        public string GetPath()
+        public string Path
         {
-            string basePath = ConfigurationManager.AppSettings["LibraryBasePath"];
-
-            basePath = Path.Combine(HttpContext.Current.Server.MapPath("~"), basePath);
-
-            string id = docId + docExtension;
-
-            Directory parentDir = db.Directories.Find(dirId);
-
-            Directory tempDir = parentDir;
-
-            List<string> pathParts = new List<string> {id, parentDir.dirId.ToString()};
-
-            while (tempDir.dirParentId > 0 && tempDir.ParentDirectory != null)
+            get
             {
-                pathParts.Add(tempDir.ParentDirectory.dirId.ToString());
-                tempDir = parentDir.ParentDirectory;
+                string basePath = ConfigurationManager.AppSettings["LibraryBasePath"];
+
+                basePath = System.IO.Path.Combine(HttpContext.Current.Server.MapPath("~"), basePath);
+
+                string id = docId + docExtension;
+
+                Directory parentDir = db.Directories.Find(dirId);
+
+                Directory tempDir = parentDir;
+
+                List<string> pathParts = new List<string> {id, parentDir.dirId.ToString()};
+
+                while (tempDir.dirParentId > 0 && tempDir.ParentDirectory != null)
+                {
+                    pathParts.Add(tempDir.ParentDirectory.dirId.ToString());
+                    tempDir = parentDir.ParentDirectory;
+                }
+
+                string path = basePath;
+
+                pathParts.Reverse();
+
+                path += string.Join("/", pathParts);
+
+                return path;
             }
-
-            string path = basePath;
-
-            pathParts.Reverse();
-
-            path += string.Join("/", pathParts);
-
-            return path; // Test
         }
 
         public string FullFilename => docName + docExtension;

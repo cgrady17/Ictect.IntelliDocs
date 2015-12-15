@@ -17,7 +17,6 @@ namespace Ictect.IntelliDocs.Web.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Document()
         {
-            this.Shares = new HashSet<Share>();
             this.AspNetUsers = new HashSet<AspNetUser>();
         }
     
@@ -30,8 +29,6 @@ namespace Ictect.IntelliDocs.Web.Models
         public string docContentType { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Share> Shares { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetUser> AspNetUsers { get; set; }
         public virtual Directory Directory { get; set; }

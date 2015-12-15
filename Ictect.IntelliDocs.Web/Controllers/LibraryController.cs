@@ -3,9 +3,11 @@ using Ictect.IntelliDocs.Web.Models;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Directory = Ictect.IntelliDocs.Web.Models.Directory;
 
 namespace Ictect.IntelliDocs.Web.Controllers
 {
@@ -38,12 +40,9 @@ namespace Ictect.IntelliDocs.Web.Controllers
                 return PartialView("Error");
             }
 
-            // Get the User's Library
-            Library userLibrary = User.Identity.GetLibrary(libraryId.Value);
-
             using (IntelliDocsEntities db = new IntelliDocsEntities())
             {
-                Directory thisDirectory = db.Directories.Include(dir => dir.Documents).Where(dir => dir.dirId == dirId && dir.Library_libId == libraryId).FirstOrDefault();
+                Directory thisDirectory = db.Directories.Include(dir => dir.Documents).FirstOrDefault(dir => dir.dirId == dirId && dir.Library_libId == libraryId);
                 if (thisDirectory == null) return View("Error", new HandleErrorInfo(new Exception("Directory not found."), "Library", "LoadDirectory"));
                 if (thisDirectory.Library_libId != libraryId) return View("Error", new HandleErrorInfo(new Exception("Specified Directory is not a part of this your Library."), "Library", "LoadDirectory"));
 
@@ -69,8 +68,10 @@ namespace Ictect.IntelliDocs.Web.Controllers
             {
                 return Json(new { status = "error", message = "A Directory Parent ID is required." });
             }
-
-            if (parentDirId == 0) parentDirId = null;
+            if (parentDirId == 0)
+            {
+                parentDirId = null;
+            }
 
             if (string.IsNullOrEmpty(dirName))
             {
@@ -78,7 +79,6 @@ namespace Ictect.IntelliDocs.Web.Controllers
             }
 
             string userId = User.Identity.GetUserId();
-            Library userLibrary = null;
 
             Directory newDir = new Directory()
             {
@@ -89,6 +89,7 @@ namespace Ictect.IntelliDocs.Web.Controllers
 
             using (IntelliDocsEntities db = new IntelliDocsEntities())
             {
+                Library userLibrary;
                 if (libraryId == null || libraryId == 0)
                 {
                     userLibrary = await User.Identity.GetLibraryAsync();
@@ -120,9 +121,54 @@ namespace Ictect.IntelliDocs.Web.Controllers
                     // TODO: Exception handling
                     return Json(new { status = "error", message = "Error adding new Directory to DB: " + ex.Message });
                 }
+
+                System.IO.Directory.CreateDirectory(Path.Combine(Server.MapPath("~"), newDir.Path));
             }
 
-            return Json(new { status = "success", message = newDir.dirId.ToString() });
+            return Json(new { status = "success", message = "New folder, " + newDir.dirName + ", was created <strong>successfully</strong>!" });
+        }
+
+        public ActionResult DeleteDirectoryConfirm(int id)
+        {
+            using (IntelliDocsEntities db = new IntelliDocsEntities())
+            {
+                Directory dir = db.Directories.Find(id);
+
+                return dir == null ? PartialView("Error") : PartialView(dir);
+            }
+        }
+
+        public ActionResult DeleteDirectory(int id)
+        {
+            using (IntelliDocsEntities db = new IntelliDocsEntities())
+            {
+                Directory dir = db.Directories.Find(id);
+
+                if (dir == null) return Json(new { status = "error", message = "Couldn't find the specified Directory." });
+
+                if (dir.dirParentId == null)
+                {
+                    return Json(new { status = "error", message = "You can't delete your Root directory." });
+                }
+
+                string path = dir.Path;
+
+                db.Entry(dir).State = EntityState.Deleted;
+
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { status = "error", message = "Failed to delete folder: " + ex.Message });
+                }
+
+                path = Path.Combine(Server.MapPath("~"), path);
+                System.IO.Directory.Delete(path, true);
+            }
+
+            return Json(new { status = "success", message = "Folder successfully deleted!" });
         }
     }
 }

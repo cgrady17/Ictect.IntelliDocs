@@ -14,10 +14,15 @@
             <a href="@Url.Content("~")" id="header-home">IntelliDocs</a>
             @if (User.Identity.IsAuthenticated)
             {
-                <input type="text" id="header-search" placeholder="Search anything..." />
+                <input type="text" id="header-search" placeholder="Search anything... (Coming Soon)" />
                 <div id="header-actions">
                     <a href="#" id="header-upload" data-action="upload" title="Upload a New Document" data-toggle="modal" data-target="#ajax-modal"><span class="glyphicon glyphicon-cloud-upload"></span>Upload</a>
-                    @*<a href="@Url.Action("NewFolder", "Library")" data-toggle="modal" data-target="#ajax-modal" id="header-new-folder" data-action="new-folder" title="Create a New Folder"><span class="glyphicon glyphicon-plus-sign"></span>New Folder</a>*@
+                    <a href="#" data-toggle="modal" data-target="#ajax-modal" id="header-new-folder" data-action="new-folder" title="Create a New Folder"><span class="glyphicon glyphicon-plus-sign"></span>New Folder</a>
+                    <div id="directory-actions">
+                        <a href="#" data-action="share-folder" title="Share this Directory"><i class="fa fa-share-alt-square"></i>Share</a>
+                        <a href="#" data-action="rename-folder" title="Rename this Directory"><i class="fa fa-pencil-square"></i>Rename</a>
+                        <a href="#"data-toggle="modal" data-target="#ajax-modal"  data-action="delete-folder" title="Delete this Directory"><i class="fa fa-trash"></i>Delete</a>
+                    </div>
                 </div>
                 <ul id="header-settings">
                     <li>

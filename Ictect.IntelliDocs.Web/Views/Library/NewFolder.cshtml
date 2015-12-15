@@ -1,11 +1,59 @@
-﻿<div class="modal-header">
+﻿<script>
+    $(function () {
+        $("input[name='parentDirId']").val(IntelliDocs.library.workingDirId);
+        $("input[name='libraryId']").val(IntelliDocs.library.libraryId);
+        $("#folder-name").html(IntelliDocs.library.dirName);
+
+        $("[data-action='upload-submit']").click(function() {
+            $("form").submit();
+        });
+
+        $("form").submit(function (e) {
+            $(this).hide(400);
+            $(this).ajaxSubmit({
+                dataType: 'json',
+                success: function (data) {
+                    $("#form-result").html(data.message);
+                    if (data.status === "success") {
+                        IntelliDocs.reloadLibrary();
+                        $("#form-result").addClass("success");
+                        $("[data-action='upload-submit']").hide(400);
+                        $(".modal-footer [data-dismiss]").html("Close");
+                    } else {
+                        $("#form-result").addClass("error");
+                        $("form").show(400);
+                    }
+                }
+            });
+
+            return false;
+        });
+    });
+</script>
+<div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
     <h4 class="modal-title">Create New Folder</h4>
 </div>
 <div class="modal-body">
+    <p>
+        This will create a new folder in the current folder, <strong><span id="folder-name"></span></strong>
+    </p>
+    <div id="form-result" class="content-container"></div>
+    @using (Html.BeginForm("CreateFolder", "Library", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label class="control-label">Give the folder a name</label>
+                <input class="form-control" type="text" name="dirName"/>
+            </div>
+        </div>
 
+        <input type="hidden" name="parentDirId" value=""/>
+        <input type="hidden" name="libraryId" value=""/>
+    }
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-warning" data-dismiss="modal">Cancel</button>
-    <button type="button" class="btn btn-success">Create</button>
+    <button type="button" class="btn btn-success" data-action="upload-submit">Create</button>
 </div>

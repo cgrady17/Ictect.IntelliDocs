@@ -25,7 +25,6 @@ namespace Ictect.IntelliDocs.Web.Models
         public int Directory_nodeId { get; set; }
         public int Document_docId { get; set; }
     
-        public virtual Document Document { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetUser> AspNetUsers { get; set; }
     }

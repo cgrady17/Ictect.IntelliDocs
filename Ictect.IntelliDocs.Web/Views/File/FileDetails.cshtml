@@ -1,0 +1,46 @@
+﻿@using Ictect.IntelliDocs.Web.Models
+@model Ictect.IntelliDocs.Web.Models.Document
+@{
+    IReadOnlyList<Share> Shares = ViewBag.Shares as List<Share>;
+}
+<script>
+    $(function () {
+        $("#doc-actions [data-action='download']").click(function() {
+            IntelliDocs.loadFile(@Model.docId);
+        });
+        $("#doc-actions [data-action='delete']").click(function() {
+            IntelliDocs.deleteFile(@Model.docId);
+        });
+        $("[data-action='view-doc-shares'][data-docid]").click(function () {
+            IntelliDocs.viewDocShares($(this).data("docid"));
+        });
+    });
+</script>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title">@Model.FullFilename</h4>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-4">Uploaded <strong>@Model.docCreatedDate.ToShortDateString()</strong>
+        </div>
+        <div class="col-md-4">Shared with <strong>@Shares.Count other(s)</strong>
+        </div>
+    </div>
+    <br/>
+    <div class="row" id="doc-actions">
+        <div class="col-md-4">
+            <button type="button" class="btn btn-lg btn-primary" data-action="download"><i class="fa fa-cloud-download"></i> Download</button>
+        </div>
+        <div class="col-md-4">
+            <button type="button" class="btn btn-lg btn-danger" data-action="delete"><i class="fa fa-trash"></i> Delete</button>
+        </div>
+        <div class="col-md-4">
+            <button type="button" class="btn btn-lg btn-info" data-action="view-doc-shares" data-docid="@Model.docId" data-dismiss="modal"><i class="fa fa-share-alt-square"></i> Share</button>
+        </div>
+    </div>
+    <div id="doc-actions-result" class="content-container"></div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+</div>

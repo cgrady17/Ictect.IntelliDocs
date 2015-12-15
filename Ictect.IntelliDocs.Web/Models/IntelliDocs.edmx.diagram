@@ -22,7 +22,6 @@
         <AssociationConnector Association="IntelliDocsModel.FK_Document_OriginalUser" ManuallyRouted="false" />
         <AssociationConnector Association="IntelliDocsModel.FK_LibraryUser" ManuallyRouted="false" />
         <AssociationConnector Association="IntelliDocsModel.FK_DirectoryLibrary" ManuallyRouted="false" />
-        <AssociationConnector Association="IntelliDocsModel.FK_ShareDocument" ManuallyRouted="false" />
         <AssociationConnector Association="IntelliDocsModel.DocumentUser" ManuallyRouted="false" />
         <AssociationConnector Association="IntelliDocsModel.ShareUser" ManuallyRouted="false" />
         <AssociationConnector Association="IntelliDocsModel.FK_Documents_Directories" ManuallyRouted="false" >
